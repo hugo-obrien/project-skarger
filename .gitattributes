@@ -1,0 +1,144 @@
+﻿# ==========================================
+# Базовая нормализация текста
+# ==========================================
+
+* text=auto
+
+# ==========================================
+# Код и текстовые конфиги
+# ==========================================
+
+*.cs text diff=csharp
+*.shader text
+*.cginc text
+*.hlsl text
+*.compute text
+*.json text
+*.md text
+*.txt text
+*.yml text
+*.yaml text
+*.xml text
+*.asmdef text
+*.asmref text
+*.uxml text
+*.uss text
+*.inputactions text
+
+# ==========================================
+# Unity YAML assets
+# ==========================================
+
+*.unity text eol=lf
+*.prefab text eol=lf
+*.mat text eol=lf
+*.anim text eol=lf
+*.controller text eol=lf
+*.overrideController text eol=lf
+*.mask text eol=lf
+*.physicMaterial text eol=lf
+*.physicsMaterial2D text eol=lf
+*.guiskin text eol=lf
+*.fontsettings text eol=lf
+*.renderTexture text eol=lf
+*.mixer text eol=lf
+*.signal text eol=lf
+*.spriteatlas text eol=lf
+*.terrainlayer text eol=lf
+*.brush text eol=lf
+*.preset text eol=lf
+*.asset text eol=lf
+*.meta text eol=lf
+
+# ==========================================
+# Git LFS: 3D models / DCC source files
+# ==========================================
+
+*.fbx filter=lfs diff=lfs merge=lfs -text lockable
+*.FBX filter=lfs diff=lfs merge=lfs -text lockable
+*.obj filter=lfs diff=lfs merge=lfs -text lockable
+*.blend filter=lfs diff=lfs merge=lfs -text lockable
+*.dae filter=lfs diff=lfs merge=lfs -text lockable
+*.3ds filter=lfs diff=lfs merge=lfs -text lockable
+*.max filter=lfs diff=lfs merge=lfs -text lockable
+*.mb filter=lfs diff=lfs merge=lfs -text lockable
+*.ma filter=lfs diff=lfs merge=lfs -text lockable
+
+# ==========================================
+# Git LFS: 2D source art
+# ==========================================
+
+*.psd filter=lfs diff=lfs merge=lfs -text lockable
+*.psb filter=lfs diff=lfs merge=lfs -text lockable
+*.kra filter=lfs diff=lfs merge=lfs -text lockable
+*.clip filter=lfs diff=lfs merge=lfs -text lockable
+*.aseprite filter=lfs diff=lfs merge=lfs -text lockable
+*.ase filter=lfs diff=lfs merge=lfs -text lockable
+*.spp filter=lfs diff=lfs merge=lfs -text lockable
+
+# ==========================================
+# Git LFS: runtime/exported images
+# ==========================================
+
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.tif filter=lfs diff=lfs merge=lfs -text
+*.tiff filter=lfs diff=lfs merge=lfs -text
+*.tga filter=lfs diff=lfs merge=lfs -text
+*.exr filter=lfs diff=lfs merge=lfs -text
+*.hdr filter=lfs diff=lfs merge=lfs -text
+*.bmp filter=lfs diff=lfs merge=lfs -text
+*.gif filter=lfs diff=lfs merge=lfs -text
+*.iff filter=lfs diff=lfs merge=lfs -text
+*.dds filter=lfs diff=lfs merge=lfs -text
+*.ktx filter=lfs diff=lfs merge=lfs -text
+*.ktx2 filter=lfs diff=lfs merge=lfs -text
+*.astc filter=lfs diff=lfs merge=lfs -text
+
+# ==========================================
+# Git LFS: audio
+# ==========================================
+
+*.wav filter=lfs diff=lfs merge=lfs -text lockable
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.ogg filter=lfs diff=lfs merge=lfs -text
+*.aif filter=lfs diff=lfs merge=lfs -text
+*.flac filter=lfs diff=lfs merge=lfs -text
+
+# ==========================================
+# Git LFS: video
+# ==========================================
+
+*.mp4 filter=lfs diff=lfs merge=lfs -text lockable
+*.mov filter=lfs diff=lfs merge=lfs -text lockable
+*.avi filter=lfs diff=lfs merge=lfs -text lockable
+*.webm filter=lfs diff=lfs merge=lfs -text lockable
+
+# ==========================================
+# Git LFS: fonts
+# ==========================================
+
+*.ttf filter=lfs diff=lfs merge=lfs -text
+*.otf filter=lfs diff=lfs merge=lfs -text
+
+# ==========================================
+# Git LFS: native plugins and libraries
+# ==========================================
+
+*.dll filter=lfs diff=lfs merge=lfs -text
+*.so filter=lfs diff=lfs merge=lfs -text
+*.dylib filter=lfs diff=lfs merge=lfs -text
+*.a filter=lfs diff=lfs merge=lfs -text
+*.lib filter=lfs diff=lfs merge=lfs -text
+*.bundle filter=lfs diff=lfs merge=lfs -text
+*.aar filter=lfs diff=lfs merge=lfs -text
+*.jar filter=lfs diff=lfs merge=lfs -text
+
+# ==========================================
+# Git LFS: archives / Unity packages
+# ==========================================
+
+*.unitypackage filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.7z filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,85 @@
+﻿# ==========================================
+# Unity generated folders
+# ==========================================
+
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+/[Cc]ache/
+/[Aa]rtifacts/
+
+# ==========================================
+# Asset meta files
+# ==========================================
+
+# Meta-файлы игнорируются только если игнорируется сам ассет.
+# Не игнорируйте *.meta внутри Assets глобально.
+!/[Aa]ssets/**/*.meta
+
+# ==========================================
+# IDE / Editor generated files
+# ==========================================
+
+ExportedObj/
+.consulo/
+.vs/
+.idea/
+
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# ==========================================
+# Unity crash / system info
+# ==========================================
+
+sysinfo.txt
+
+# ==========================================
+# OS files
+# ==========================================
+
+.DS_Store
+Thumbs.db
+
+# ==========================================
+# Builds and packaged output
+# ==========================================
+
+# Обычно билды не хранят в Git.
+# Если нужно хранить — вынесите их в отдельную папку и используйте Git LFS.
+*.apk
+*.aab
+*.app
+
+# Unity packages обычно не коммитят как артефакты.
+# Если вы сознательно храните .unitypackage, лучше отправить его в LFS.
+*.unitypackage
+
+# ==========================================
+# Crashlytics / build plugins
+# ==========================================
+
+crashlytics-build.properties
+crashlytics-buildid.txt
