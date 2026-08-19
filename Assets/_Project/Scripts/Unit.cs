@@ -11,7 +11,7 @@ namespace _Project.Scripts {
 
         [Header("Selection")]
         [SerializeField]
-        private Color selectedColor = Color.darkGreen;
+        private Color selectedColor = Color.lawnGreen;
 
         [Header("Animation (optional)")]
         [SerializeField] private Animator animator;

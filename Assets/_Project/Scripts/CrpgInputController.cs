@@ -97,7 +97,7 @@ namespace _Project.Scripts {
         }
         
         private void SpawnMoveMarker(Vector3 point, Vector3 normal) {
-            if (moveMarkerPrefab = null) {
+            if (moveMarkerPrefab == null) {
                 Debug.Log("CrpgInputController.SpawnMoveMarker(): moveMarkerPrefab is null");
                 return;
             }

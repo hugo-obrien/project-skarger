@@ -9,7 +9,7 @@ public class MoveMarkerVisual : MonoBehaviour {
 
     [SerializeField] [Min(0f)] private float autoFadeDuration = 0.5f;
 
-    private Color baseColor = Color.darkGreen;
+    private Color baseColor = Color.lawnGreen;
 
     private float timeLeft = -1f;
     private float fadeDuration = -1f;
