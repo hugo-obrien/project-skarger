@@ -1,10 +1,7 @@
-using System;
 using UnityEngine;
 
 namespace _Project.Scripts {
-    public class UnitSelectionVisual : MonoBehaviour {
-        [SerializeField] private MeshRenderer markerRenderer;
-
+    public class UnitSelectionVisual : MarkerVisual {
         [SerializeField] [Min(0f)] private float groundOffset = 0.03f;
         [SerializeField] [Min(0.1f)] private float raycastHeight = 2f;
         [SerializeField] [Min(0.1f)] private float raycastDistance = 2f;
@@ -14,15 +11,6 @@ namespace _Project.Scripts {
 
         private Transform target;
         private bool visible;
-
-        private MaterialPropertyBlock materialPropertyBlock;
-
-        private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
-        private static readonly int ColorId = Shader.PropertyToID("_Color");
-
-        private void Reset() {
-            markerRenderer = GetComponentInChildren<MeshRenderer>(true);
-        }
 
         private void LateUpdate() {
             if (!visible || target == null) {
@@ -43,7 +31,7 @@ namespace _Project.Scripts {
             visible = true;
 
             gameObject.SetActive(true);
-            SetColor(color);
+            base.ApplyColor(color);
         }
 
         public void Hide() {
@@ -62,21 +50,6 @@ namespace _Project.Scripts {
                 groundMask,
                 QueryTriggerInteraction.Ignore
             );
-        }
-
-        private void SetColor(Color color) {
-            if (markerRenderer == null) return;
-
-            if (materialPropertyBlock == null) {
-                materialPropertyBlock = new MaterialPropertyBlock();
-            }
-            
-            markerRenderer.GetPropertyBlock(materialPropertyBlock);
-            
-            materialPropertyBlock.SetColor(ColorId, color);
-            materialPropertyBlock.SetColor(BaseColorId, color);
-            
-            markerRenderer.SetPropertyBlock(materialPropertyBlock);
         }
     }
 }

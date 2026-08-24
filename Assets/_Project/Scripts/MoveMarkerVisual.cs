@@ -1,83 +1,60 @@
-using System;
 using UnityEngine;
 
-public class MoveMarkerVisual : MonoBehaviour {
-    [SerializeField] private MeshRenderer markerRenderer;
+namespace _Project.Scripts {
+    public class MoveMarkerVisual : MarkerVisual {
+        [SerializeField] [Min(0f)] [Tooltip("0 - not automatically hide")]
+        private float lifetime = 0f;
 
-    [SerializeField] [Min(0f)] [Tooltip("0 - not automatically hide")]
-    private float lifetime = 0f;
+        [SerializeField] [Min(0f)] private float autoFadeDuration = 0.5f;
 
-    [SerializeField] [Min(0f)] private float autoFadeDuration = 0.5f;
+        private Color baseColor = Color.lawnGreen;
 
-    private Color baseColor = Color.lawnGreen;
+        private float timeLeft = -1f;
+        private float fadeDuration = -1f;
 
-    private float timeLeft = -1f;
-    private float fadeDuration = -1f;
+        private void Update() {
+            if (timeLeft <= 0f) {
+                return;
+            }
 
-    private MaterialPropertyBlock materialPropertyBlock;
+            timeLeft -= Time.deltaTime;
 
-    private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
-    private static readonly int ColorId = Shader.PropertyToID("_Color");
+            float alpha = 1f;
 
-    private void Reset() {
-        markerRenderer = GetComponentInChildren<MeshRenderer>(true);
-    }
+            if (fadeDuration > 0f) {
+                alpha = Mathf.Clamp01(timeLeft / fadeDuration);
+            } else if (lifetime > 0f && timeLeft < autoFadeDuration) {
+                alpha = Mathf.Clamp01(timeLeft / autoFadeDuration);
+            }
 
-    private void Update() {
-        if (timeLeft <= 0f) {
-            return;
+            ApplyColor(alpha);
+
+            if (timeLeft <= 0f) {
+                Destroy(gameObject);
+            }
         }
 
-        timeLeft -= Time.deltaTime;
+        public void Setup(Vector3 position, Quaternion rotation, Color color) {
+            transform.SetPositionAndRotation(position, rotation);
 
-        float alpha = 1f;
+            baseColor = color;
+            timeLeft = lifetime > 0f ? lifetime : -1f;
+            fadeDuration = -1f;
 
-        if (fadeDuration > 0f) {
-            alpha = Mathf.Clamp01(timeLeft / fadeDuration);
-        } else if (lifetime > 0f && timeLeft < autoFadeDuration) {
-            alpha = Mathf.Clamp01(timeLeft / autoFadeDuration);
+            gameObject.SetActive(true);
+            ApplyColor(1f);
         }
 
-        ApplyColor(alpha);
-
-        if (timeLeft <= 0f) {
-            Destroy(gameObject);
-        }
-    }
-
-    public void Setup(Vector3 position, Quaternion rotation, Color color) {
-        transform.SetPositionAndRotation(position, rotation);
-
-        baseColor = color;
-        timeLeft = lifetime > 0f ? lifetime : -1f;
-        fadeDuration = -1f;
-
-        gameObject.SetActive(true);
-        ApplyColor(1f);
-    }
-
-    public void FadeOutAndDestroy(float duration = 0.25f) {
-        fadeDuration = Mathf.Max(0.01f, duration);
-        timeLeft = fadeDuration;
-    }
-
-    private void ApplyColor(float alphaMultiplier) {
-        if (markerRenderer == null) {
-            return;
+        public void FadeOutAndDestroy(float duration = 0.25f) {
+            fadeDuration = Mathf.Max(0.01f, duration);
+            timeLeft = fadeDuration;
         }
 
-        if (materialPropertyBlock == null) {
-            materialPropertyBlock = new MaterialPropertyBlock();
-        }
-        
-        markerRenderer.GetPropertyBlock(materialPropertyBlock);
+        private void ApplyColor(float alphaMultiplier) {
+            Color color = baseColor;
+            color.a *= alphaMultiplier;
 
-        Color color = baseColor;
-        color.a *= alphaMultiplier;
-        
-        materialPropertyBlock.SetColor(ColorId, color);
-        materialPropertyBlock.SetColor(BaseColorId, color);
-        
-        markerRenderer.SetPropertyBlock(materialPropertyBlock);
+            base.ApplyColor(color);
+        }
     }
 }
