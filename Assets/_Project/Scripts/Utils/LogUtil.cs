@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace _Project.Scripts.Utils {
-    public class LogUtil {
+    public static class LogUtil {
 
         public static void Info(string className, string methodName, string message) {
             Log(LogType.Log, className, methodName, message);

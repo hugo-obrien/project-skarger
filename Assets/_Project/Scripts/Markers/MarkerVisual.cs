@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace _Project.Scripts {
+namespace _Project.Scripts.Markers {
     public abstract class MarkerVisual : MonoBehaviour {
         [SerializeField] protected MeshRenderer markerRenderer;
 

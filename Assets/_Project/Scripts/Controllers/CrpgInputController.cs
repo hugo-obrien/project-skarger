@@ -1,8 +1,9 @@
+using _Project.Scripts.Markers;
 using _Project.Scripts.Units;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace _Project.Scripts {
+namespace _Project.Scripts.Controllers {
     public class CrpgInputController : MonoBehaviour {
         [SerializeField] private Camera mainCamera;
         [SerializeField] private LayerMask unitLayer = 1;

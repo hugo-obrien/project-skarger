@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _Project.Scripts {
+namespace _Project.Scripts.Markers {
     public class MoveMarkerVisual : MarkerVisual {
         [SerializeField] [Min(0f)] [Tooltip("0 - not automatically hide")]
         private float lifetime = 0f;

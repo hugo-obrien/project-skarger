@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _Project.Scripts {
+namespace _Project.Scripts.Markers {
     public class UnitSelectionVisual : MarkerVisual {
         [SerializeField] [Min(0f)] private float groundOffset = 0.03f;
         [SerializeField] [Min(0.1f)] private float raycastHeight = 2f;
