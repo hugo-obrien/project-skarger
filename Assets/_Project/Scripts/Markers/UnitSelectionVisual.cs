@@ -10,7 +10,7 @@ namespace _Project.Scripts {
         [SerializeField] private LayerMask groundMask = 1;
 
         private Transform target;
-        private bool visible;
+        private bool visible = false;
 
         private void LateUpdate() {
             if (!visible || target == null) {

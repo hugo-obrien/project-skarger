@@ -1,35 +1,31 @@
-using System;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
 
-namespace _Project.Scripts {
+namespace _Project.Scripts.Units {
     [RequireComponent(typeof(NavMeshAgent))]
     public class Unit : MonoBehaviour {
-        [SerializeField] private UnitStats stats = new UnitStats();
-        [SerializeField] private UnitSelectionVisual selectionVisual;
+        [Header("Faction")] [SerializeField] private UnitFaction faction = UnitFaction.User;
+        [Header("Stats")] [SerializeField] private UnitStats stats = new UnitStats();
+        [Header("Selector")] [SerializeField] private UnitSelectionVisual selectionVisual;
 
-        [Header("Selection")]
-        [SerializeField]
-        private Color selectedColor = Color.lawnGreen;
+        [Header("Animation (optional)")] [SerializeField]
+        private Animator animator;
 
-        [Header("Animation (optional)")]
-        [SerializeField] private Animator animator;
+        [SerializeField] private string speedParameter = "Speed";
 
-        [SerializeField]
-        private string speedParameter = "Speed";
-
-        [SerializeField]
-        private bool disableRootMotion = true;
+        [SerializeField] private bool disableRootMotion = true;
 
         private NavMeshAgent agent;
-        private bool isSelected;
+        private bool isSelected = false;
 
         private int speedParameterHash;
         private bool hasSpeedParameter;
 
         public bool IsSelected => isSelected;
         public UnitStats Stats => stats;
+        public UnitFaction Faction => faction;
+
+        public bool IsPlayerControlled => faction == UnitFaction.User;
 
         private void Awake() {
             agent = GetComponent<NavMeshAgent>();
@@ -49,8 +45,12 @@ namespace _Project.Scripts {
             if (isSelected) return;
 
             isSelected = true;
+            
             if (selectionVisual != null) {
+                Color selectedColor = UnitFactionColors.GetSelectionColor(faction);
                 selectionVisual.Show(transform, selectedColor);
+            } else {
+                Debug.LogWarning("Unit.Select(): selectionVisual is null");
             }
         }
 
@@ -68,7 +68,8 @@ namespace _Project.Scripts {
 
             agent.isStopped = false;
 
-            if (NavMesh.SamplePosition(worldPosition, out NavMeshHit navHit, stats.destinationSnapDistance, NavMesh.AllAreas)) {
+            if (NavMesh.SamplePosition(worldPosition, out NavMeshHit navHit, stats.destinationSnapDistance,
+                    NavMesh.AllAreas)) {
                 worldPosition = navHit.position;
             } else {
                 return false;
@@ -86,10 +87,23 @@ namespace _Project.Scripts {
 
         public bool HasReachedDestination(float tolerance = 0.2f) {
             if (agent == null || !agent.isOnNavMesh) return true;
-            
+
             if (agent.pathPending) return false;
 
             return agent.remainingDistance <= Mathf.Max(agent.stoppingDistance, tolerance);
+        }
+
+        public void SetFaction(UnitFaction newFaction) {
+            if (faction == newFaction) {
+                return;
+            }
+            
+            faction = newFaction;
+
+            if (isSelected && selectionVisual != null) {
+                Color newColor = UnitFactionColors.GetSelectionColor(newFaction);
+                selectionVisual.Show(transform, newColor);
+            }
         }
 
         private void ApplyStatsToAgent() {
@@ -126,7 +140,7 @@ namespace _Project.Scripts {
             if (animator == null) {
                 animator = GetComponentInChildren<Animator>(true);
             }
-            
+
             if (animator == null) return;
 
             if (disableRootMotion) {
@@ -161,9 +175,8 @@ namespace _Project.Scripts {
             if (agent != null && agent.isOnNavMesh && !agent.isStopped) {
                 speedValue = agent.velocity.magnitude;
             }
-            
+
             animator.SetFloat(speedParameterHash, speedValue);
         }
-
     }
 }

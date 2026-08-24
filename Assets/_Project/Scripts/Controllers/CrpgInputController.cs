@@ -1,4 +1,4 @@
-using System;
+using _Project.Scripts.Units;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -50,6 +50,10 @@ namespace _Project.Scripts {
         }
 
         private void HandleMoveClick() {
+            if (selectedUnit == null || !selectedUnit.IsPlayerControlled) {
+                return;
+            }
+
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             if (!Physics.Raycast(ray, out RaycastHit hit, maxRaycastDistance, groundLayer, QueryTriggerInteraction.Ignore)) {
                 return;
