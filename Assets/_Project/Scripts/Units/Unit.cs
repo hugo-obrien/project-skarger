@@ -1,4 +1,6 @@
+using System;
 using _Project.Scripts.Markers;
+using _Project.Scripts.Utils;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -22,11 +24,12 @@ namespace _Project.Scripts.Units {
         private int speedParameterHash;
         private bool hasSpeedParameter;
 
-        public bool IsSelected => isSelected;
         public UnitStats Stats => stats;
         public UnitFaction Faction => faction;
 
         public bool IsPlayerControlled => faction == UnitFaction.User;
+        
+        public event Action<Unit> Destroyed;
 
         private void Awake() {
             agent = GetComponent<NavMeshAgent>();
@@ -42,24 +45,25 @@ namespace _Project.Scripts.Units {
             UpdateAnimation();
         }
 
-        public void Select() {
-            if (isSelected) return;
+        private void OnDestroy() {
+            Destroyed?.Invoke(this);
+        }
 
-            isSelected = true;
+        public void SetSelected(bool value) {
+            if (isSelected == value) {
+                return;
+            }
+
+            isSelected = value;
+            if (selectionVisual == null) {
+                LogUtil.Warn("Unit", "SetSelected", "Selection visual is null");
+                return;
+            }
             
-            if (selectionVisual != null) {
+            if (value) {
                 Color selectedColor = UnitFactionColors.GetSelectionColor(faction);
                 selectionVisual.Show(transform, selectedColor);
             } else {
-                Debug.LogWarning("Unit.Select(): selectionVisual is null");
-            }
-        }
-
-        public void Deselect() {
-            if (!isSelected) return;
-
-            isSelected = false;
-            if (selectionVisual != null) {
                 selectionVisual.Hide();
             }
         }
