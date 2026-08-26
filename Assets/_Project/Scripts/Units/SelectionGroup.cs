@@ -46,6 +46,18 @@ namespace _Project.Scripts.Units {
             RaiseSelectionChanged();
         }
 
+        public void SelectExclusiveRange(IEnumerable<Unit> units) {
+            ClearInternal();
+
+            foreach (var unit in units) {
+                if (unit != null) {
+                    AddInternal(unit);
+                }
+            }
+            
+            RaiseSelectionChanged();
+        }
+
         public void Toggle(Unit unit) {
             if (unit == null) {
                 LogUtil.Warn("SelectionGroup", "Toggle", "Unit is null");
@@ -72,6 +84,19 @@ namespace _Project.Scripts.Units {
             }
         }
 
+        public void AddRange(IEnumerable<Unit> units) {
+            bool anyAdded = false;
+            foreach (var unit in units) {
+                if (unit != null && AddInternal(unit)) {
+                    anyAdded = true;
+                }
+            }
+
+            if (anyAdded) {
+                RaiseSelectionChanged();
+            }
+        }
+
         public void Remove(Unit unit) {
             if (unit  == null) {
                 return;
@@ -89,10 +114,6 @@ namespace _Project.Scripts.Units {
 
             ClearInternal();
             RaiseSelectionChanged();
-        }
-
-        public bool SelectedUserController() {
-            return selectedUnits.First().Faction == UnitFaction.User;
         }
         
         private bool AddInternal(Unit unit) {

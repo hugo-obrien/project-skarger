@@ -1,5 +1,6 @@
 using System;
 using _Project.Scripts.Markers;
+using _Project.Scripts.UI;
 using _Project.Scripts.Utils;
 using UnityEngine;
 using UnityEngine.AI;
@@ -47,6 +48,14 @@ namespace _Project.Scripts.Units {
 
         private void OnDestroy() {
             Destroyed?.Invoke(this);
+        }
+
+        private void OnEnable() {
+            UnitRegistry.Register(this);
+        }
+
+        private void OnDisable() {
+            UnitRegistry.Unregister(this);
         }
 
         public void SetSelected(bool value) {

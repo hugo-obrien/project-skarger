@@ -1,13 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using _Project.Scripts.Markers;
+using _Project.Scripts.UI;
 using _Project.Scripts.Units;
 using _Project.Scripts.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace _Project.Scripts.Controllers {
+
     [RequireComponent(typeof(SelectionGroup))]
+    [RequireComponent(typeof(SelectionBoxOverlay))]
     public class CrpgInputController : MonoBehaviour {
         
         [Header("Camera")]
@@ -26,6 +30,10 @@ namespace _Project.Scripts.Controllers {
         [Header("Selection")]
         [SerializeField] private bool deselectOnEmptyLeftClick = false;
 
+        [Header("Selection box")] 
+        [SerializeField] private SelectionBoxOverlay selectionBoxOverlay;
+        [SerializeField] [Min(1f)] private float dragThresholdPixels;
+
         [Header("Group movement")] 
         [SerializeField] [Min(0.1f)] [Tooltip("Distance between units in group")]
         private float unitSpacing = 1.25f;
@@ -35,6 +43,9 @@ namespace _Project.Scripts.Controllers {
         [SerializeField] [Min(1f)] private float maxRaycastDistance = 1000f;
 
         private SelectionGroup selectionGroup;
+        private bool isLeftPointerDown;
+        private bool isBoxSelecting;
+        private Vector2 boxStartScreenPosition;
         
         private MoveMarkerVisual currentMoveMarker;
 
@@ -43,6 +54,10 @@ namespace _Project.Scripts.Controllers {
         private void Awake() {
             if (!TryGetComponent(out selectionGroup)) {
                 LogUtil.Error("CrpgInputController", "Awake", "Requires SelectionGroup");
+            }
+
+            if (!TryGetComponent(out selectionBoxOverlay)) {
+                LogUtil.Error("CrpgInputController", "Awake", "Requires SelectionBoxOverlay");
             }
         }
 
@@ -62,19 +77,122 @@ namespace _Project.Scripts.Controllers {
                 return;
             }
 
-            if (IsPointerOverUI()) {
-                return;
-            }
+            if (Input.GetMouseButtonDown(0)) HandleLeftMouseDown();
+            if (Input.GetMouseButton(0)) HandleLeftMouseHeld();
+            if (Input.GetMouseButtonUp(0)) HandleLeftMouseUp();
 
-            if (Input.GetMouseButtonDown(0)) {
-                HandleSelectionClick();
-            }
-
-            if (Input.GetMouseButtonDown(1) && selectionGroup.HasPlayerControlledUnits()) {
+            if (Input.GetMouseButtonDown(1) && !IsPointerOverUI() && selectionGroup.HasPlayerControlledUnits()) {
                 HandleMoveClick();
             }
 
             HideMoveMarkerIfReached();
+        }
+
+        private void HandleLeftMouseDown() {
+            if (IsPointerOverUI()) return;
+
+            isLeftPointerDown = true;
+            isBoxSelecting = false;
+            boxStartScreenPosition = Input.mousePosition;
+        }
+        
+        private void HandleLeftMouseHeld() {
+            if (!isLeftPointerDown) return;
+
+            Vector2 current = Input.mousePosition;
+            if (!isBoxSelecting) {
+                if (Vector2.Distance(boxStartScreenPosition, current) < dragThresholdPixels) {
+                    return;
+                }
+
+                isBoxSelecting = true;
+            }
+
+            if (selectionBoxOverlay != null) {
+                selectionBoxOverlay.Show(CalculateScreenRect(boxStartScreenPosition, current));
+            }
+        }
+
+        private void HandleLeftMouseUp() {
+            if (!isLeftPointerDown) return;
+            if (isBoxSelecting) {
+                Rect rect = CalculateScreenRect(boxStartScreenPosition, Input.mousePosition);
+                HandleBoxSelection(rect, IsShiftPressed());
+            } else {
+                HandleSelectionClick();
+            }
+
+            if (selectionBoxOverlay != null) {
+                selectionBoxOverlay.Hide();
+            }
+
+            isLeftPointerDown = false;
+            isBoxSelecting = false;
+        }
+
+        private Rect CalculateScreenRect(Vector2 start, Vector2 current) {
+            float xMin = Mathf.Min(start.x, current.x);
+            float xMax = Mathf.Max(start.x, current.x);
+            float yMin = Mathf.Min(start.y, current.y);
+            float yMax = Mathf.Max(start.y, current.y);
+            return new Rect(xMin, yMin, xMax - xMin, yMax - yMin);
+        }
+
+        private void HandleBoxSelection(Rect rect, bool shiftHeld) {
+            var playerUnitsInBox = new List<Unit>();
+            var uncontrolledInBox = new List<UnitScreenPosition>();
+
+            foreach (var unit in UnitRegistry.Units) {
+                if (unit == null) continue;
+
+                Vector3 screenPoint = mainCamera.WorldToScreenPoint(unit.transform.position);
+                if (screenPoint.z < 0f) continue;
+
+                Vector2 screenPosition = new Vector2(screenPoint.x, screenPoint.y);
+                if (!rect.Contains(screenPosition)) continue;
+
+                if (unit.IsPlayerControlled) {
+                    playerUnitsInBox.Add(unit);
+                } else {
+                    uncontrolledInBox.Add(new UnitScreenPosition(unit, screenPosition));
+                }
+            }
+
+            if (playerUnitsInBox.Count > 0) {
+                if (shiftHeld && selectionGroup.HasPlayerControlledUnits()) {
+                    selectionGroup.AddRange(playerUnitsInBox);
+                } else {
+                    selectionGroup.SelectExclusiveRange(playerUnitsInBox);
+                }
+                return;
+            }
+
+            if (shiftHeld) return;
+
+            if (uncontrolledInBox.Count == 0) {
+                selectionGroup.Clear();
+                return;
+            }
+
+            Unit closest = FindClosestToBoxStart(uncontrolledInBox, boxStartScreenPosition);
+            if (closest != null) {
+                selectionGroup.SelectExclusive(closest);
+            }
+        }
+
+        private Unit FindClosestToBoxStart(List<UnitScreenPosition> candidates, Vector2 boxStart) {
+            Unit closest = null;
+            float closestDistanceSqr = float.MaxValue;
+
+            foreach (var candidate in candidates) {
+                float distanceSqr = (candidate.ScreenPosition - boxStart).sqrMagnitude;
+                if (distanceSqr < closestDistanceSqr) {
+                    closestDistanceSqr = distanceSqr;
+                    closest = candidate.Unit;
+                }
+            }
+
+            return closest;
         }
 
         private void HandleMoveClick() {
@@ -195,6 +313,16 @@ namespace _Project.Scripts.Controllers {
         
         private bool IsShiftPressed() {
             return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        }
+        
+        private readonly struct UnitScreenPosition {
+            public UnitScreenPosition(Unit unit, Vector2 screenPosition) {
+                Unit = unit;
+                ScreenPosition = screenPosition;
+            }
+
+            public Unit Unit { get; }
+            public Vector2 ScreenPosition { get; }
         }
     }
 }
