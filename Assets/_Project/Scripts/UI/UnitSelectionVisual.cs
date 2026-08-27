@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _Project.Scripts.Markers {
+namespace _Project.Scripts.UI {
     public class UnitSelectionVisual : MarkerVisual {
         [SerializeField] [Min(0f)] private float groundOffset = 0.03f;
         [SerializeField] [Min(0.1f)] private float raycastHeight = 2f;
@@ -10,10 +10,10 @@ namespace _Project.Scripts.Markers {
         [SerializeField] private LayerMask groundMask = 1;
 
         private Transform target;
-        private bool visible = false;
+        private bool visible;
 
         private void LateUpdate() {
-            if (!visible || target == null) {
+            if (!visible || !target) {
                 return;
             }
 

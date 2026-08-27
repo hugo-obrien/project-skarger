@@ -1,5 +1,4 @@
 using System;
-using _Project.Scripts.Markers;
 using _Project.Scripts.UI;
 using _Project.Scripts.Utils;
 using UnityEngine;
@@ -64,7 +63,7 @@ namespace _Project.Scripts.Units {
             }
 
             isSelected = value;
-            if (selectionVisual == null) {
+            if (!selectionVisual) {
                 LogUtil.Warn("Unit", "SetSelected", "Selection visual is null");
                 return;
             }

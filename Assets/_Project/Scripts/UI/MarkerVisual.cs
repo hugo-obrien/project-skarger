@@ -1,13 +1,14 @@
-﻿using UnityEngine;
+﻿using _Project.Scripts.Utils;
+using UnityEngine;
 
-namespace _Project.Scripts.Markers {
+namespace _Project.Scripts.UI {
     public abstract class MarkerVisual : MonoBehaviour {
         [SerializeField] protected MeshRenderer markerRenderer;
 
-        protected MaterialPropertyBlock materialPropertyBlock;
+        private MaterialPropertyBlock materialPropertyBlock;
 
-        protected static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
-        protected static readonly int ColorId = Shader.PropertyToID("_Color");
+        private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+        private static readonly int ColorId = Shader.PropertyToID("_Color");
 
         protected void Reset() {
             markerRenderer = GetComponentInChildren<MeshRenderer>(true);
@@ -15,19 +16,17 @@ namespace _Project.Scripts.Markers {
 
         protected void Awake() {
             if (markerRenderer == null) {
-                Debug.LogWarning($"{GetType().Name}.ApplyColor(): markRenderer is null");
+                LogUtil.Warn("MarkerVisual", "Awake", "MarkerRenderer is null");
             }
         }
 
         protected void ApplyColor(Color color) {
-            if (markerRenderer == null) {
-                Debug.LogWarning($"{GetType().Name}.ApplyColor(): markRenderer is null");
+            if (!markerRenderer) {
+                LogUtil.Warn("MarkerVisual", "ApplyColor", "MarkerRenderer is null");
                 return;
             }
 
-            if (materialPropertyBlock == null) {
-                materialPropertyBlock = new MaterialPropertyBlock();
-            }
+            materialPropertyBlock ??= new MaterialPropertyBlock();
 
             markerRenderer.GetPropertyBlock(materialPropertyBlock);
 

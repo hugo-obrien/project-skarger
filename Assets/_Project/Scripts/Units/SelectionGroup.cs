@@ -158,7 +158,7 @@ namespace _Project.Scripts.Units {
 
         private void ClearInternal() {
             foreach (var unit in selectedUnits.ToList()) {
-                if (unit == null) {
+                if (!unit) {
                     continue;
                 }
                 
