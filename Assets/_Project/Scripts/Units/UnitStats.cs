@@ -20,5 +20,11 @@ namespace _Project.Scripts.Units {
         [Min(0.05f)]
         public float destinationSnapDistance = 1.0f;
 
+        [Header("Health")] 
+        [Min(1f)] public float maxHealth = 100f;
+
+        [Header("Death")] [Min(0f)] 
+        public float deathAnimationDuration = 1.5f;
+
     }
 }

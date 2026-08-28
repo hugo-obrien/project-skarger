@@ -18,10 +18,15 @@ namespace _Project.Scripts.Units {
         [Header("Stats")] [SerializeField] private UnitStats stats = new UnitStats();
         [Header("Selector")] [SerializeField] private UnitSelectionVisual selectionVisual;
 
-        [Header("Animation (optional)")] 
+        [Header("Animation")] 
         [SerializeField] private Animator animator;
         [SerializeField] private string speedParameter = "Speed";
         [SerializeField] private bool disableRootMotion = true;
+        
+        [Header("Death & Physics")]
+        [SerializeField] private UnitRagdoll ragdoll;
+        [SerializeField] private CapsuleCollider rootCollider;
+        [SerializeField] private string deathTrigger = "Death";
 
         private NavMeshAgent agent;
         private bool isSelected;
@@ -31,23 +36,39 @@ namespace _Project.Scripts.Units {
         private MovementMode movementMode = MovementMode.Auto;
         private bool isRunning;
 
+        private float currentHealth;
+        private bool isDead;
+
+        private int deathTriggerHash;
+        private bool hasDeathTrigger;
+
         public UnitStats Stats => stats;
         public UnitFaction Faction => faction;
         public bool IsPlayerControlled => faction == UnitFaction.User;
         public bool IsRunning => isRunning;
+        public bool IsDead => isDead;
+        public float CurrentHealth => currentHealth;
+        public float MaxHealth => stats.maxHealth;
         
         public event Action<Unit> Destroyed;
+        public event Action<Unit> Died; 
 
         private void Awake() {
             agent = GetComponent<NavMeshAgent>();
             agent.updateRotation = false;
 
+            if (ragdoll == null) {
+                ragdoll = GetComponentInChildren<UnitRagdoll>(true);
+            }
+
             SetupAnimator();
             ApplyStatsToAgent();
+            currentHealth = stats.maxHealth;
         }
 
         private void Update() {
-            //ApplyStatsToAgent();
+            if (isDead) return;
+            
             UpdateMovementSpeed();
             RotateTowardsMovementDirection();
             UpdateAnimation();
@@ -85,7 +106,7 @@ namespace _Project.Scripts.Units {
         }
 
         public bool MoveTo(Vector3 worldPosition) {
-            if (agent == null || !agent.isOnNavMesh) return false;
+            if (isDead || !agent || !agent.isOnNavMesh) return false;
 
             agent.isStopped = false;
 
@@ -100,14 +121,14 @@ namespace _Project.Scripts.Units {
         }
 
         public void Stop() {
-            if (agent == null || !agent.isOnNavMesh) return;
+            if (isDead || agent == null || !agent.isOnNavMesh) return;
 
             agent.isStopped = true;
             agent.ResetPath();
         }
 
         public bool HasReachedDestination(float tolerance = 0.2f) {
-            if (agent == null || !agent.isOnNavMesh) return true;
+            if (isDead || !agent || !agent.isOnNavMesh) return true;
 
             if (agent.pathPending) return false;
 
@@ -115,7 +136,7 @@ namespace _Project.Scripts.Units {
         }
 
         public void SetFaction(UnitFaction newFaction) {
-            if (faction == newFaction) {
+            if (isDead || faction == newFaction) {
                 return;
             }
             
@@ -128,19 +149,56 @@ namespace _Project.Scripts.Units {
         }
 
         public void SetMovementMode(MovementMode mode) {
+            if (isDead) return;
             movementMode = mode;
+        }
+
+        public void TakeDamage(float amount, Vector3? impactDirection = null) {
+            LogUtil.Info("Unit", "TakeDamage", $"{amount}");
+            if (isDead || amount <= 0f) return;
+
+            currentHealth -= amount;
+            if (currentHealth <= 0f) {
+                currentHealth = 0;
+                Die(impactDirection);
+            }
+        }
+
+        public void Heal(float amount) {
+            if (isDead || currentHealth <= 0) return;
+            currentHealth = Mathf.Min(currentHealth + amount, stats.maxHealth);
+        }
+
+        private void Die(Vector3? impactDirection = null) {
+            if (isDead) return;
+            isDead = true;
+
+            if (isSelected) SetSelected(false);
+
+            if (agent != null) {
+                agent.isStopped = true;
+                agent.updatePosition = false;
+                agent.updateRotation = false;
+                agent.enabled = false;
+            }
+
+            if (rootCollider != null) {
+                rootCollider.enabled = false;
+            }
+
+            StartCoroutine(DeathSequence(impactDirection));
+            Died?.Invoke(this);
         }
 
         private void ApplyStatsToAgent() {
             if (agent == null || !agent.isOnNavMesh) return;
 
-            agent.speed = stats.runSpeed;
             agent.acceleration = stats.acceleration;
             agent.stoppingDistance = stats.stoppingDistance;
         }
 
         private void UpdateMovementSpeed() {
-            if (agent == null || !agent.isOnNavMesh || agent.isStopped) {
+            if (!agent || !agent.isOnNavMesh || agent.isStopped) {
                 return;
             }
 
@@ -224,20 +282,46 @@ namespace _Project.Scripts.Units {
                     break;
                 }
             }
+
+            if (!string.IsNullOrWhiteSpace(deathTrigger)) {
+                deathTriggerHash = Animator.StringToHash(deathTrigger);
+                foreach (var param in animator.parameters) {
+                    if (param.type == AnimatorControllerParameterType.Trigger && param.name == deathTrigger) {
+                        hasDeathTrigger = true;
+                        break;
+                    }
+                }
+            }
         }
 
         private void UpdateAnimation() {
-            if (animator == null || !hasSpeedParameter) {
+            if (!animator || !hasSpeedParameter) {
                 return;
             }
 
             float speedValue = 0f;
 
-            if (agent != null && agent.isOnNavMesh && !agent.isStopped) {
+            if (agent && agent.isOnNavMesh && !agent.isStopped) {
                 speedValue = agent.velocity.magnitude;
             }
 
             animator.SetFloat(speedParameterHash, speedValue);
+        }
+
+        private System.Collections.IEnumerator DeathSequence(Vector3? impactDirection) {
+            if (animator != null && hasDeathTrigger) {
+                animator.SetTrigger(deathTriggerHash);
+            }
+
+            yield return new WaitForSeconds(stats.deathAnimationDuration);
+
+            if (ragdoll != null) {
+                LogUtil.Info("Unit", "DeathSequence", "Ragdoll on");
+                ragdoll.Activate(impactDirection);
+            } else if (animator != null) {
+                LogUtil.Info("Unit", "DeathSequence", "Ragdoll off");
+                animator.enabled = false;
+            }
         }
     }
 }

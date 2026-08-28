@@ -83,7 +83,7 @@ namespace _Project.Scripts.Controllers {
             var uncontrolledInBox = new List<UnitScreenPosition>();
             
             foreach (var unit in UnitRegistry.Units) {
-                if (unit == null) continue;
+                if (unit == null || unit.IsDead) continue;
                 
                 Vector3 screenPoint = MainCamera.WorldToScreenPoint(unit.transform.position);
                 if (screenPoint.z < 0f) continue;
@@ -136,7 +136,7 @@ namespace _Project.Scripts.Controllers {
         }
 
         private void HandleSelectionClick(Vector2 mousePosition, bool shiftHeld) {
-            if (MainCamera == null) return;
+            if (!MainCamera) return;
             
             Ray ray = MainCamera.ScreenPointToRay(mousePosition);
             if (!Physics.Raycast(ray, out RaycastHit hit, maxRaycastDistance, unitLayer, QueryTriggerInteraction.Ignore)) {
@@ -144,7 +144,7 @@ namespace _Project.Scripts.Controllers {
             }
 
             Unit unit = hit.collider.GetComponentInParent<Unit>();
-            if (unit == null) {
+            if (!unit || unit.IsDead) {
                 return;
             }
 
