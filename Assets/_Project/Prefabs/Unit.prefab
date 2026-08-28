@@ -236,14 +236,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 833f854fdf139484e802d60c7e067537, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Unit
+  faction: 0
   stats:
-    moveSpeed: 3.5
+    walkSpeed: 2.5
+    runSpeed: 5
+    runDistanceThreshold: 4
     acceleration: 16
     stoppingDistance: 0.1
     turnSpeed: 14
     destinationSnapDistance: 1
   selectionVisual: {fileID: 4551351546116015934}
-  selectedColor: {r: 0, g: 0.3921569, b: 0, a: 1}
   animator: {fileID: 0}
   speedParameter: Speed
   disableRootMotion: 1
@@ -299,6 +301,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4957605393579145647, guid: 4f46098734d87e24490aef9267915ad2, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 973c714a09333624e84c1a4efe795d9e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

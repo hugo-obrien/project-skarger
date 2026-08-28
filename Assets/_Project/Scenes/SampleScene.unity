@@ -1622,6 +1622,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4125697375461346158, guid: 0671ad76bbce80442a00145d47c8f823, type: 3}
+      propertyPath: stats.runSpeed
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 6562767893101750493, guid: 0671ad76bbce80442a00145d47c8f823, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
