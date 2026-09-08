@@ -164,6 +164,10 @@ namespace _Project.Scripts.Units {
             }
         }
 
+        public void SaySomething(string message) {
+            LogUtil.Info("Unit", "SaySomething", message);
+        }
+
         public void Heal(float amount) {
             if (isDead || currentHealth <= 0) return;
             currentHealth = Mathf.Min(currentHealth + amount, stats.maxHealth);

@@ -63,4 +63,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df34076e9b32425cb602ed7147560a6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Utils.DamageDealer
+  keyActions: []
   damage: 50
+  sayMessage: Hello, World!

@@ -1,11 +1,14 @@
+using _Project.Scripts.UI.Console;
 using _Project.Scripts.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace _Project.Scripts.Controllers {
+namespace _Project.Scripts.Controllers
+{
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Camera))]
-    public class CameraController : MonoBehaviour {
+    public class CameraController : MonoBehaviour
+    {
         private const float DefaultEdgeThresholdPixels = 10f;
         private const float MinInputMagnitude = 0.001f;
         private const float MaxInputMagnitude = 1f;
@@ -32,25 +35,40 @@ namespace _Project.Scripts.Controllers {
         private float pendingZoomInput;
         private Vector2 pendingMouseDelta;
 
-        private void Awake() {
+        private DebugConsole console;
+
+        private void Awake()
+        {
             InitializeInput();
+
+            console = FindAnyObjectByType<DebugConsole>();
         }
 
-        private void OnEnable() {
+        private void OnEnable()
+        {
             InitializeInput();
             controls.Enable();
         }
 
-        private void OnDisable() {
+        private void OnDisable()
+        {
             controls?.Disable();
         }
 
-        private void OnDestroy() {
+        private void OnDestroy()
+        {
             controls?.Dispose();
         }
 
-        private void Update() {
-            if (controls == null) {
+        private void Update()
+        {
+            if (console != null && console.IsOpen)
+            {
+                return;
+            }
+            
+            if (controls == null)
+            {
                 LogUtil.Warn("CameraController", "Update", "Controls is null");
             }
 
@@ -63,15 +81,18 @@ namespace _Project.Scripts.Controllers {
             ClearFrameInput();
         }
 
-        private void ClearFrameInput() {
+        private void ClearFrameInput()
+        {
             pendingZoomInput = 0f;
             pendingMouseDelta = Vector2.zero;
         }
 
-        private void ApplyZoom() {
+        private void ApplyZoom()
+        {
             float zoomInput = Mathf.Clamp(pendingZoomInput, -MaxZoomInputPerFrame, MaxZoomInputPerFrame);
 
-            if (Mathf.Abs(zoomInput) < MinInputMagnitude) {
+            if (Mathf.Abs(zoomInput) < MinInputMagnitude)
+            {
                 return;
             }
 
@@ -91,15 +112,20 @@ namespace _Project.Scripts.Controllers {
             float t = 1f;
             float targetHeight = -1f;
 
-            if (zoomInput > 0 && nextHeight < minZoomOffset) {
+            if (zoomInput > 0 && nextHeight < minZoomOffset)
+            {
                 targetHeight = minZoomOffset;
-            } else if (zoomInput < 0 && nextHeight > maxZoomOffset) {
+            }
+            else if (zoomInput < 0 && nextHeight > maxZoomOffset)
+            {
                 targetHeight = maxZoomOffset;
             }
 
-            if (targetHeight >= 0f) {
+            if (targetHeight >= 0f)
+            {
                 float deltaHeight = nextHeight - currentHeight;
-                if (Mathf.Abs(deltaHeight) > 0.001f) {
+                if (Mathf.Abs(deltaHeight) > 0.001f)
+                {
                     t = (targetHeight - currentHeight) / deltaHeight;
                 }
             }
@@ -108,40 +134,45 @@ namespace _Project.Scripts.Controllers {
             transform.position = Vector3.Lerp(currentPos, nextPos, t);
         }
 
-        private Vector3 FoundGroundProjection(Vector3 currentPosition) {
-            if (Physics.Raycast(currentPosition, Vector3.down, out RaycastHit hit, 1000f, groundLayer, QueryTriggerInteraction.Ignore)) {
+        private Vector3 FoundGroundProjection(Vector3 currentPosition)
+        {
+            if (Physics.Raycast(currentPosition, Vector3.down, out RaycastHit hit, 1000f, groundLayer,
+                    QueryTriggerInteraction.Ignore))
+            {
                 return hit.point;
             }
 
             return new Vector3(currentPosition.x, 0, currentPosition.z);
         }
 
-        private void ApplyRotation(float deltaTime) {
+        private void ApplyRotation(float deltaTime)
+        {
             float keyboardRotation = controls.CameraControl.RotateKeyboard.ReadValue<float>();
-            if (keyboardRotation != 0) {
-                LogUtil.Info("CameraController", "ApplyRotation", "Keyboard rotation:" + keyboardRotation);
-            }
-            
+
             bool mouseRotationActive = controls.CameraControl.RotateMouseButton.IsPressed();
 
             float yawDegrees = keyboardRotation * keyboardRotationSpeed * deltaTime;
 
-            if (mouseRotationActive) {
+            if (mouseRotationActive)
+            {
                 yawDegrees += pendingMouseDelta.x * mouseRotationSensitivity;
             }
 
-            if (Mathf.Abs(yawDegrees) < MinInputMagnitude) {
+            if (Mathf.Abs(yawDegrees) < MinInputMagnitude)
+            {
                 return;
             }
 
             transform.rotation = Quaternion.AngleAxis(yawDegrees, Vector3.up) * transform.rotation;
         }
 
-        private void ApplyMovement(float deltaTime) {
+        private void ApplyMovement(float deltaTime)
+        {
             Vector2 moveInput = controls.CameraControl.Move.ReadValue<Vector2>();
             bool mouseRotationActive = controls.CameraControl.RotateMouseButton.IsPressed();
 
-            if (!disableEdgeScrollWhileMouseRotating || !mouseRotationActive) {
+            if (!disableEdgeScrollWhileMouseRotating || !mouseRotationActive)
+            {
                 moveInput += GetEdgeScrollInput();
             }
 
@@ -156,45 +187,57 @@ namespace _Project.Scripts.Controllers {
             transform.position += displacement;
         }
 
-        private Vector3 GetPlanarDirection(Vector3 direction) {
+        private Vector3 GetPlanarDirection(Vector3 direction)
+        {
             direction.y = 0f;
 
-            if (direction.sqrMagnitude < MinInputMagnitude) {
+            if (direction.sqrMagnitude < MinInputMagnitude)
+            {
                 return Vector3.zero;
             }
 
             return direction.normalized;
         }
 
-        private Vector2 GetEdgeScrollInput() {
+        private Vector2 GetEdgeScrollInput()
+        {
             Vector2 pointerPosition = controls.CameraControl.PointerPosition.ReadValue<Vector2>();
 
             if (pointerPosition.x < 0f ||
                 pointerPosition.y < 0f ||
                 pointerPosition.x > Screen.width ||
-                pointerPosition.y > Screen.height) {
+                pointerPosition.y > Screen.height)
+            {
                 return Vector2.zero;
             }
 
             Vector2 edgeInput = Vector2.zero;
 
-            if (pointerPosition.x <= edgeThresholdPixels) {
+            if (pointerPosition.x <= edgeThresholdPixels)
+            {
                 edgeInput.x = -1f;
-            } else if (pointerPosition.x >= Screen.width - edgeThresholdPixels) {
+            }
+            else if (pointerPosition.x >= Screen.width - edgeThresholdPixels)
+            {
                 edgeInput.x = 1f;
             }
 
-            if (pointerPosition.y <= edgeThresholdPixels) {
+            if (pointerPosition.y <= edgeThresholdPixels)
+            {
                 edgeInput.y = -1f;
-            } else if (pointerPosition.y >= Screen.height - edgeThresholdPixels) {
+            }
+            else if (pointerPosition.y >= Screen.height - edgeThresholdPixels)
+            {
                 edgeInput.y = 1f;
             }
 
             return edgeInput;
         }
 
-        private void InitializeInput() {
-            if (controls != null) {
+        private void InitializeInput()
+        {
+            if (controls != null)
+            {
                 return;
             }
 
@@ -204,11 +247,13 @@ namespace _Project.Scripts.Controllers {
             controls.CameraControl.RotateMouseDelta.performed += OnRotateMouseDeltaPerformed;
         }
 
-        private void OnZoomPerformed(InputAction.CallbackContext context) {
+        private void OnZoomPerformed(InputAction.CallbackContext context)
+        {
             pendingZoomInput += context.ReadValue<float>();
         }
 
-        private void OnRotateMouseDeltaPerformed(InputAction.CallbackContext context) {
+        private void OnRotateMouseDeltaPerformed(InputAction.CallbackContext context)
+        {
             pendingMouseDelta += context.ReadValue<Vector2>();
         }
     }
