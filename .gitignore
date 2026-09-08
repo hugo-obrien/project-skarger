@@ -1,23 +1,53 @@
 ```
-# Unity project files
-*.meta
+# Build artifacts
+*.dll
+*.exe
+*.pdb
+*.unitypackage
+
+# Unity specific
 Library/
 Temp/
 Obj/
 Build/
+Builds/
 Logs/
-.vs/
-.idea/
-*.userprefs
-*.suo
-*.user
+MemoryCaptures/
+WebGLTemplates/
 *.unityproj
-*.booproj
-*.pidb
-*.snk
-*.config
-*.lock
+*.sln
 *.csproj
-*.prefab
-*.mat
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.meta
+
+# Cache
+.gitignore_lock
+*.cache
+
+# Environment
+.env
+.env.local
+.env.*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*~
 ```

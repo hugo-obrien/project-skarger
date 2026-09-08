@@ -15,7 +15,7 @@ namespace _Project.Scripts.UI {
         [SerializeField] private float displayDuration = 2f;
         
         [Header("Text (Optional)")]
-        [SerializeField] private TMPro.TextMeshPro textMesh;
+        [SerializeField] private TextMesh textMesh;
         
         private MaterialPropertyBlock materialPropertyBlock;
         private static readonly int ColorId = Shader.PropertyToID("_Color");
