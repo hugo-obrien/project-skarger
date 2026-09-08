@@ -142,7 +142,7 @@ MonoBehaviour:
   alignToGround: 1
   groundMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 128
 --- !u!1 &7183093526189999512
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,10 +246,15 @@ MonoBehaviour:
     stoppingDistance: 0.1
     turnSpeed: 14
     destinationSnapDistance: 1
+    maxHealth: 100
+    deathAnimationDuration: 1.5
   selectionVisual: {fileID: 4551351546116015934}
   animator: {fileID: 0}
   speedParameter: Speed
   disableRootMotion: 1
+  ragdoll: {fileID: 0}
+  rootCollider: {fileID: 0}
+  deathTrigger: Death
 --- !u!114 &3342485339922702196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,6 +267,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bb0f2d0a26cdff4ab58ec3b6ef7ae48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitRagdoll
+  animator: {fileID: 0}
+  impactForce: 2
 --- !u!1001 &411184435666891832
 PrefabInstance:
   m_ObjectHideFlags: 0
