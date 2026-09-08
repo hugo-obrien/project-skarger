@@ -1,85 +1,107 @@
-﻿# ==========================================
-# Unity generated folders
-# ==========================================
-
-/[Ll]ibrary/
-/[Tt]emp/
-/[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
-/[Ll]ogs/
-/[Uu]ser[Ss]ettings/
-/[Mm]emoryCaptures/
-/[Rr]ecordings/
-/[Cc]ache/
-/[Aa]rtifacts/
-
-# ==========================================
-# Asset meta files
-# ==========================================
-
-# Meta-файлы игнорируются только если игнорируется сам ассет.
-# Не игнорируйте *.meta внутри Assets глобально.
-!/[Aa]ssets/**/*.meta
-
-# ==========================================
-# IDE / Editor generated files
-# ==========================================
-
-ExportedObj/
-.consulo/
-.vs/
-.idea/
-
-*.csproj
+```
+# Unity-specific ignores
+Library/
+Temp/
+Obj/
+Build/
+Logs/
 *.unityproj
 *.sln
-*.suo
-*.tmp
+*.csproj
 *.user
 *.userprefs
 *.pidb
 *.booproj
 *.svd
+.TestCoverageData/
+[._]*.sln
+[._]*.cs
+[._]*.meta
+*.log
+
+# Compiled and build artifacts
+*.dll
+*.exe
 *.pdb
 *.mdb
-*.opendb
-*.VC.db
+*.ilk
+*.map
+*.lib
+*.so
+*.dylib
+*.a
+*.o
+*.obj
+*.out
 
-*.pidb.meta
-*.pdb.meta
-*.mdb.meta
+# Dependencies
+Packages/
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.egg-info/
+.Python/
+.python-version
 
-# ==========================================
-# Unity crash / system info
-# ==========================================
+# Logs and temp files
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
 
-sysinfo.txt
+# Environment
+.env
+.env.local
+.env.*
 
-# ==========================================
-# OS files
-# ==========================================
-
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
 .DS_Store
 Thumbs.db
 
-# ==========================================
-# Builds and packaged output
-# ==========================================
+# Testing and coverage
+.coverage
+coverage/
+htmlcov/
+.nyc_output/
+istanbul/
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
 
-# Обычно билды не хранят в Git.
-# Если нужно хранить — вынесите их в отдельную папку и используйте Git LFS.
-*.apk
-*.aab
-*.app
+# Distribution artifacts
+dist/
+build/
+target/
+release/
+debug/
 
-# Unity packages обычно не коммитят как артефакты.
-# Если вы сознательно храните .unitypackage, лучше отправить его в LFS.
-*.unitypackage
-
-# ==========================================
-# Crashlytics / build plugins
-# ==========================================
-
-crashlytics-build.properties
-crashlytics-buildid.txt
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
+```

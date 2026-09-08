@@ -1,12 +1,34 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using _Project.Scripts.UI;
 using _Project.Scripts.Units;
 using _Project.Scripts.Utils;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.EventSystems;
 
 namespace _Project.Scripts.Controllers {
+    
+    public enum RightClickTargetType {
+        None,
+        Ground,
+        FriendlyUnit,
+        NeutralOrAlliedUnit,
+        EnemyUnit
+    }
+    
+    public struct RightClickTarget {
+        public RightClickTargetType Type;
+        public Vector3 Position;
+        public Unit TargetUnit;
+        
+        public RightClickTarget(RightClickTargetType type, Vector3 position, Unit targetUnit = null) {
+            Type = type;
+            Position = position;
+            TargetUnit = targetUnit;
+        }
+    }
+    
     [RequireComponent(typeof(SelectionGroup))]
     [RequireComponent(typeof(SelectionBoxOverlay))]
     public class CrpgInputController : MonoBehaviour {
@@ -19,6 +41,10 @@ namespace _Project.Scripts.Controllers {
         [SerializeField] private Color moveMarkerColor = Color.darkGreen;
         [SerializeField] [Min(0f)] private float moveMarkerOffset = 0.03f;
         [SerializeField] private float moveMarkerFadeDuration = 0.25f;
+        
+        [Header("Dialogue")]
+        [SerializeField] private DialogueBubble dialogueBubblePrefab;
+        [SerializeField] private Color dialogueBubbleColor = Color.white;
 
         [Header("Selection box")]
         [SerializeField]
@@ -41,6 +67,7 @@ namespace _Project.Scripts.Controllers {
 
         private SelectionGroup selectionGroup;
         private SelectionHandler selectionHandler;
+        private RightClickHandler rightClickHandler;
 
         private bool isLeftPointerDown;
         private bool isBoxSelecting;
@@ -63,6 +90,13 @@ namespace _Project.Scripts.Controllers {
             ) {
                 MainCamera = mainCamera
             };
+            
+            rightClickHandler = new RightClickHandler(
+                mainCamera, unitLayer, groundLayer, maxRaycastDistance,
+                unitSpacing, occupancyRadiusFactor,
+                dialogueBubblePrefab, dialogueBubbleColor,
+                moveMarkerPrefab, moveMarkerColor, moveMarkerOffset
+            );
         }
 
         private void Reset() {
@@ -94,10 +128,11 @@ namespace _Project.Scripts.Controllers {
             }
             
             if (Input.GetMouseButtonDown(1) && !IsPointerOverUI() && selectionGroup.HasPlayerControlledUnits()) {
-                HandleMoveClick();
+                rightClickHandler.HandleRightClick(selectionGroup.GetPlayerControlledUnits(), _ => { });
             }
-
-            HideMoveMarkerIfReached();
+            
+            rightClickHandler.UpdateDialogueModeUnits();
+            rightClickHandler.UpdateCombatModeUnits();
         }
 
         private void HandleMoveClick() {

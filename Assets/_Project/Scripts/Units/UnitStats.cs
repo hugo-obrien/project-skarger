@@ -26,5 +26,10 @@ namespace _Project.Scripts.Units {
         [Header("Death")] [Min(0f)] 
         public float deathAnimationDuration = 1.5f;
 
+        [Header("Combat")]
+        [Min(0f)] public float combatDistance = 2.5f;
+        [Min(0f)] public float damage = 10f;
+        [Min(0f)] public float attackCooldown = 1.5f;
+
     }
 }
