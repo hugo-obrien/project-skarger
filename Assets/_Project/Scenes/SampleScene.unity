@@ -2274,6 +2274,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2492702784825540052, guid: b7a1fe9bb3bb5c4469b78066a644ffa3, type: 3}
+      propertyPath: moveMarkerPrefab
+      value: 
+      objectReference: {fileID: 3268328794978206678, guid: 8d9d72129ba7c7d48aeadeeefe4dad0e, type: 3}
+    - target: {fileID: 2492702784825540052, guid: b7a1fe9bb3bb5c4469b78066a644ffa3, type: 3}
+      propertyPath: interactiveLayers.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2492702784825540052, guid: b7a1fe9bb3bb5c4469b78066a644ffa3, type: 3}
+      propertyPath: interactiveLayers.Array.data[1].type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2492702784825540052, guid: b7a1fe9bb3bb5c4469b78066a644ffa3, type: 3}
+      propertyPath: interactiveLayers.Array.data[0].layerMask.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 2492702784825540052, guid: b7a1fe9bb3bb5c4469b78066a644ffa3, type: 3}
+      propertyPath: interactiveLayers.Array.data[1].layerMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
     - target: {fileID: 4896074761858910548, guid: b7a1fe9bb3bb5c4469b78066a644ffa3, type: 3}
       propertyPath: mainCamera
       value: 
