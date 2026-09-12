@@ -143,6 +143,37 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 128
+--- !u!1 &7158157879550632746
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4459878377627995049}
+  m_Layer: 8
+  m_Name: SpeechBubbleAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4459878377627995049
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7158157879550632746}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6562767893101750493}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7183093526189999512
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,6 +209,7 @@ Transform:
   m_Children:
   - {fileID: 4717557744322760086}
   - {fileID: 6296037538631782496}
+  - {fileID: 4459878377627995049}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &3157072096322823935
@@ -243,7 +275,7 @@ MonoBehaviour:
     runSpeed: 5
     runDistanceThreshold: 4
     acceleration: 16
-    stoppingDistance: 0.1
+    stoppingDistance: 1.5
     turnSpeed: 14
     destinationSnapDistance: 1
     maxHealth: 100
@@ -255,6 +287,8 @@ MonoBehaviour:
   ragdoll: {fileID: 0}
   rootCollider: {fileID: 0}
   deathTrigger: Death
+  speechBubblePrefab: {fileID: 934622326811685007, guid: b37c182c0c8de0441b14c71995dddbfc, type: 3}
+  speechBubbleAnchor: {fileID: 4459878377627995049}
 --- !u!114 &3342485339922702196
 MonoBehaviour:
   m_ObjectHideFlags: 0

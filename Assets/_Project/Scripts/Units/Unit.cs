@@ -27,6 +27,10 @@ namespace _Project.Scripts.Units {
         [SerializeField] private UnitRagdoll ragdoll;
         [SerializeField] private CapsuleCollider rootCollider;
         [SerializeField] private string deathTrigger = "Death";
+        
+        [Header("Speech Bubble")]
+        [SerializeField] private SpeechBubble speechBubblePrefab;
+        [SerializeField] private Transform speechBubbleAnchor;
 
         private NavMeshAgent agent;
         private bool isSelected;
@@ -41,6 +45,8 @@ namespace _Project.Scripts.Units {
 
         private int deathTriggerHash;
         private bool hasDeathTrigger;
+
+        private SpeechBubble currentBubble;
 
         public UnitStats Stats => stats;
         public UnitFaction Faction => faction;
@@ -166,11 +172,40 @@ namespace _Project.Scripts.Units {
 
         public void SaySomething(string message) {
             LogUtil.Info("Unit", "SaySomething", message);
+            ShowSpeechBubble(message);
         }
 
         public void Heal(float amount) {
             if (isDead || currentHealth <= 0) return;
             currentHealth = Mathf.Min(currentHealth + amount, stats.maxHealth);
+        }
+
+        public void ShowSpeechBubble(string text, float duration = 4f)
+        {
+            Debug.Log($"Show speech bubble: {text}");
+            if (speechBubblePrefab == null)
+            {
+                LogUtil.Warn("Unit", "ShowSpeechBubble", "SpeechBubble prefab not set");
+                return;
+            }
+
+            if (currentBubble != null)
+            {
+                Destroy(currentBubble.gameObject);
+            }
+
+            Vector3 spawnPosition = speechBubbleAnchor != null
+                ? speechBubbleAnchor.position
+                : transform.position + Vector3.up * 2f;
+
+            currentBubble = Instantiate(speechBubblePrefab, spawnPosition, Quaternion.identity);
+
+            if (speechBubbleAnchor != null)
+            {
+                currentBubble.transform.SetParent(speechBubbleAnchor, worldPositionStays: true);
+            }
+            
+            currentBubble.Show(text, duration);
         }
 
         private void Die(Vector3? impactDirection = null) {

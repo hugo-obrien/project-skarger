@@ -48,6 +48,8 @@ namespace _Project.Scripts.Controllers
         private LayerMask unitLayer;
         private MoveMarkerVisual currentMoveMarker;
 
+        private Unit currentInteractionTarget;
+
         private void Awake()
         {
             if (!TryGetComponent(out selectionGroup))
@@ -170,9 +172,7 @@ namespace _Project.Scripts.Controllers
                 case UnitFaction.Allied:
                 case UnitFaction.Neutral:
                 {
-                    //todo show dialog box
-                    LogUtil.Info("RightClickHandler", "HandleUnitRightClick", 
-                        "Process allied or neutral right click. Not implemented yet");
+                    HandleAlliedOrNeutralClick(unit);
                     return;
                 }
                 case UnitFaction.Enemy:
@@ -187,6 +187,25 @@ namespace _Project.Scripts.Controllers
                     LogUtil.Warn("RightClickHandler", "HandleUnitRightClick", 
                         $"Unknown unit faction {unit.Faction}");
                     return;
+                }
+            }
+        }
+
+        private void HandleAlliedOrNeutralClick(Unit targetUnit)
+        {
+            IReadOnlyList<Unit> units = selectionGroup.GetPlayerControlledUnits();
+            if (units.Count == 0) return;
+            
+            activeMovers.Clear();
+            currentInteractionTarget = targetUnit;
+            ClearMoveMarker();
+
+            foreach (var unit in units)
+            {
+                if (unit == null) continue;
+                if (unit.MoveTo(targetUnit.transform.position))
+                {
+                    activeMovers.Add(unit);
                 }
             }
         }
@@ -261,7 +280,7 @@ namespace _Project.Scripts.Controllers
 
         private void HideMoveMarkerIfReached()
         {
-            if (currentMoveMarker == null)
+            if (currentMoveMarker == null && currentInteractionTarget == null)
             {
                 activeMovers.Clear();
                 return;
@@ -271,19 +290,35 @@ namespace _Project.Scripts.Controllers
             if (activeMovers.Count == 0)
             {
                 ClearMoveMarker();
+                currentInteractionTarget = null;
                 return;
             }
 
+            bool allReached = true;
             foreach (var mover in activeMovers)
             {
                 if (!mover.HasReachedDestination())
                 {
-                    return;
+                    allReached = false;
+                    break;
                 }
             }
 
-            currentMoveMarker.FadeOutAndDestroy(moveMarkerFadeDuration);
-            currentMoveMarker = null;
+            if (!allReached) return;
+            Debug.Log($"All reached. Current move marker: {currentMoveMarker}, current interaction target {currentInteractionTarget}");
+
+            if (currentMoveMarker != null)
+            {
+                currentMoveMarker.FadeOutAndDestroy(moveMarkerFadeDuration);
+                currentMoveMarker = null;
+            }
+
+            if (currentInteractionTarget != null)
+            {
+                currentInteractionTarget.ShowSpeechBubble("Hello, traveller!");
+                currentInteractionTarget = null;
+            }
+            
             activeMovers.Clear();
         }
     }
