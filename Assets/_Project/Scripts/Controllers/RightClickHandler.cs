@@ -28,13 +28,13 @@ namespace _Project.Scripts.Controllers
 
         [SerializeField] private InteractiveLayerEntry[] interactiveLayers;
         [SerializeField] [Min(1f)] private float maxRaycastDistance = 1000f;
-        
-        [Header("Group movement")] 
-        [SerializeField] [Min(0.1f)] [Tooltip("Distance between units in group")]
+
+        [Header("Group movement")] [SerializeField] [Min(0.1f)] [Tooltip("Distance between units in group")]
         private float unitSpacing = 1.25f;
+
         [SerializeField] [Range(0.1f, 0.9f)] [Tooltip("Occupance check radius")]
         private float occupancyRadiusFactor = 0.45f;
-        
+
         [Header("Markers")] [SerializeField] private MoveMarkerVisual moveMarkerPrefab;
         [SerializeField] private Color moveMarkerColor = Color.darkGreen;
         [SerializeField] [Min(0f)] private float moveMarkerOffset = 0.03f;
@@ -43,7 +43,7 @@ namespace _Project.Scripts.Controllers
         private SelectionGroup selectionGroup;
 
         private int combinedClickedMask;
-        
+
         private readonly List<Unit> activeMovers = new();
         private LayerMask unitLayer;
         private MoveMarkerVisual currentMoveMarker;
@@ -82,7 +82,7 @@ namespace _Project.Scripts.Controllers
             {
                 HandleRightClick();
             }
-            
+
             HideMoveMarkerIfReached();
         }
 
@@ -103,7 +103,7 @@ namespace _Project.Scripts.Controllers
             {
                 if (hit.collider == null)
                 {
-                    LogUtil.Warn("RightClickHandler", "HandleRightClick","hit collider is null");
+                    LogUtil.Warn("RightClickHandler", "HandleRightClick", "hit collider is null");
                     continue;
                 }
 
@@ -131,7 +131,7 @@ namespace _Project.Scripts.Controllers
                 }
                 case InteractiveLayerType.Unit:
                 {
-                    HandleUnitRightClick();
+                    HandleUnitRightClick(hit);
                     break;
                 }
                 default:
@@ -143,12 +143,64 @@ namespace _Project.Scripts.Controllers
             }
         }
 
-        private void HandleUnitRightClick()
+        private void HandleUnitRightClick(RaycastHit hit)
         {
-            LogUtil.Info("RightClickHandler", "HandleUnitRightClick", "Not implemented yet");
+            Unit unit = hit.collider.GetComponentInParent<Unit>();
+            if (unit == null)
+            {
+                LogUtil.Warn("RightClickHandler", "HandleUnitRightClick",
+                    "Hit collider is on unit layer but has no Unit component");
+                return;
+            }
+
+            if (unit.IsDead) return;
+            
+            HandleUnitRightClick(unit);
+        }
+
+        private void HandleUnitRightClick(Unit unit)
+        {
+            switch (unit.Faction)
+            {
+                case UnitFaction.User:
+                {
+                    HandleMove(unit.transform.position);
+                    return;
+                }
+                case UnitFaction.Allied:
+                case UnitFaction.Neutral:
+                {
+                    //todo show dialog box
+                    LogUtil.Info("RightClickHandler", "HandleUnitRightClick", 
+                        "Process allied or neutral right click. Not implemented yet");
+                    return;
+                }
+                case UnitFaction.Enemy:
+                {
+                    // todo attack
+                    LogUtil.Info("RightClickHandler", "HandleUnitRightClick", 
+                    "Process enemy right click. Not implemented yet");
+                    return;
+                }
+                default:
+                {
+                    LogUtil.Warn("RightClickHandler", "HandleUnitRightClick", 
+                        $"Unknown unit faction {unit.Faction}");
+                    return;
+                }
+            }
         }
 
         private void HandleMove(RaycastHit hit)
+        {
+            HandleMove(hit.point);
+            if (activeMovers.Count > 0)
+            {
+                SpawnMoveMarker(hit.point, hit.normal);
+            }
+        }
+        
+        private void HandleMove(Vector3 point)
         {
             IReadOnlyList<Unit> units = selectionGroup.GetPlayerControlledUnits();
             if (units.Count == 0)
@@ -158,27 +210,26 @@ namespace _Project.Scripts.Controllers
 
             activeMovers.Clear();
             ClearMoveMarker();
-
+            
             float occupancyRadius = unitSpacing * occupancyRadiusFactor;
             IReadOnlyList<Vector3> destinations =
-                FormationResolver.BuildDestinations(units, hit.point, unitSpacing, unitLayer, occupancyRadius);
+                FormationResolver.BuildDestinations(units, point, unitSpacing, unitLayer, occupancyRadius);
             
-            for (int i = 0; i < units.Count; i++) {
+            for (int i = 0; i < units.Count; i++)
+            {
                 Unit unit = units[i];
-                if (unit == null) {
+                if (unit == null)
+                {
                     continue;
                 }
 
-                if (unit.MoveTo(destinations[i])) {
+                if (unit.MoveTo(destinations[i]))
+                {
                     activeMovers.Add(unit);
                 }
             }
-
-            if (activeMovers.Count > 0) {
-                SpawnMoveMarker(hit.point, hit.normal);
-            }
         }
-        
+
         private void ClearMoveMarker()
         {
             if (currentMoveMarker == null)
@@ -189,7 +240,7 @@ namespace _Project.Scripts.Controllers
             Destroy(currentMoveMarker.gameObject);
             currentMoveMarker = null;
         }
-        
+
         private void SpawnMoveMarker(Vector3 point, Vector3 normal)
         {
             if (moveMarkerPrefab == null)
@@ -207,7 +258,7 @@ namespace _Project.Scripts.Controllers
             currentMoveMarker = Instantiate(moveMarkerPrefab, markerPosition, markerRotation);
             currentMoveMarker.Setup(markerPosition, markerRotation, moveMarkerColor);
         }
-        
+
         private void HideMoveMarkerIfReached()
         {
             if (currentMoveMarker == null)
@@ -235,6 +286,5 @@ namespace _Project.Scripts.Controllers
             currentMoveMarker = null;
             activeMovers.Clear();
         }
-        
     }
 }
