@@ -1,0 +1,37 @@
+name: Unity Build
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build for ${{ matrix.targetPlatform }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          - StandaloneWindows64
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        lfs: true
+    
+    - uses: game-ci/unity-builder@v4
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      with:
+        targetPlatform: ${{ matrix.targetPlatform }}
+        buildName: CRPG_Build
+        versioning: none
+        
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Build-Windows
+        path: build

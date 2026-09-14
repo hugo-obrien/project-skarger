@@ -177,9 +177,7 @@ namespace _Project.Scripts.Controllers
                 }
                 case UnitFaction.Enemy:
                 {
-                    // todo attack
-                    LogUtil.Info("RightClickHandler", "HandleUnitRightClick", 
-                    "Process enemy right click. Not implemented yet");
+                    HandleEnemyClick(unit);
                     return;
                 }
                 default:
@@ -206,6 +204,37 @@ namespace _Project.Scripts.Controllers
                 if (unit.MoveTo(targetUnit.transform.position))
                 {
                     activeMovers.Add(unit);
+                }
+            }
+        }
+
+        private void HandleEnemyClick(Unit enemyUnit)
+        {
+            IReadOnlyList<Unit> units = selectionGroup.GetPlayerControlledUnits();
+            if (units.Count == 0) return;
+            
+            activeMovers.Clear();
+            ClearMoveMarker();
+            currentInteractionTarget = null;
+
+            // Каждая единица в выделении начинает атаковать врага
+            foreach (var unit in units)
+            {
+                if (unit == null || unit.IsDead) continue;
+                
+                // Получаем компонент UnitCombat если есть
+                var unitCombat = unit.GetComponent<_Project.Scripts.Combat.UnitCombat>();
+                if (unitCombat != null)
+                {
+                    unitCombat.AttackTarget(enemyUnit);
+                }
+                else
+                {
+                    // Fallback: просто движемся к врагу (старое поведение)
+                    if (unit.MoveTo(enemyUnit.transform.position))
+                    {
+                        activeMovers.Add(unit);
+                    }
                 }
             }
         }
