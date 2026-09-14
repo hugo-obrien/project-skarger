@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using _Project.Scripts.Combat;
 using _Project.Scripts.UI;
 using _Project.Scripts.Units;
 using _Project.Scripts.Utils;
@@ -177,9 +178,7 @@ namespace _Project.Scripts.Controllers
                 }
                 case UnitFaction.Enemy:
                 {
-                    // todo attack
-                    LogUtil.Info("RightClickHandler", "HandleUnitRightClick", 
-                    "Process enemy right click. Not implemented yet");
+                    HandleAttack(unit);
                     return;
                 }
                 default:
@@ -187,6 +186,25 @@ namespace _Project.Scripts.Controllers
                     LogUtil.Warn("RightClickHandler", "HandleUnitRightClick", 
                         $"Unknown unit faction {unit.Faction}");
                     return;
+                }
+            }
+        }
+
+        private void HandleAttack(Unit target)
+        {
+            IReadOnlyList<Unit> units = selectionGroup.GetPlayerControlledUnits();
+            if (units.Count == 0) return;
+            
+            ClearMoveMarker();
+            currentInteractionTarget = null;
+            activeMovers.Clear();
+
+            foreach (var unit in units)
+            {
+                if (unit == null) continue;
+                if (unit.TryGetComponent<Combat.UnitCombat>(out var combat))
+                {
+                    combat.Attack(target);
                 }
             }
         }
@@ -222,13 +240,11 @@ namespace _Project.Scripts.Controllers
         private void HandleMove(Vector3 point)
         {
             IReadOnlyList<Unit> units = selectionGroup.GetPlayerControlledUnits();
-            if (units.Count == 0)
-            {
-                return;
-            }
+            if (units.Count == 0) return;
 
             activeMovers.Clear();
             ClearMoveMarker();
+            currentInteractionTarget = null;
             
             float occupancyRadius = unitSpacing * occupancyRadiusFactor;
             IReadOnlyList<Vector3> destinations =
@@ -237,9 +253,11 @@ namespace _Project.Scripts.Controllers
             for (int i = 0; i < units.Count; i++)
             {
                 Unit unit = units[i];
-                if (unit == null)
+                if (unit == null) continue;
+
+                if (unit.TryGetComponent<UnitCombat>(out var combat))
                 {
-                    continue;
+                    combat.StopCombat();
                 }
 
                 if (unit.MoveTo(destinations[i]))

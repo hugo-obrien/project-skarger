@@ -187,6 +187,7 @@ GameObject:
   - component: {fileID: 8781461883587209000}
   - component: {fileID: 4125697375461346158}
   - component: {fileID: 3342485339922702196}
+  - component: {fileID: 1429578717358984401}
   m_Layer: 8
   m_Name: Unit
   m_TagString: Untagged
@@ -280,6 +281,20 @@ MonoBehaviour:
     destinationSnapDistance: 1
     maxHealth: 100
     deathAnimationDuration: 1.5
+    combat:
+      isRanged: 0
+      meleeRange: 2
+      meleeDamage: 10
+      meleeAttackCooldown: 1
+      rangedMinRange: 3
+      rangedMaxRange: 20
+      rangedDamage: 2
+      rangedAttackCooldown: 2
+      projectilePrefab: {fileID: 8258415285002649392, guid: 7667f37ca8177e14398235285c885bfd, type: 3}
+      projectileSpeed: 20
+      projectileHitRadius: 0.5
+      hitEffectPrefab: {fileID: 5371751816997110140, guid: 05537cbdf70f32f448e679003dc4b1bb, type: 3}
+      hitEffectTime: 2
   selectionVisual: {fileID: 4551351546116015934}
   animator: {fileID: 0}
   speedParameter: Speed
@@ -289,6 +304,9 @@ MonoBehaviour:
   deathTrigger: Death
   speechBubblePrefab: {fileID: 934622326811685007, guid: b37c182c0c8de0441b14c71995dddbfc, type: 3}
   speechBubbleAnchor: {fileID: 4459878377627995049}
+  attackTrigger: Attack
+  combatIdleTrigger: IsInCombat
+  attackTypeParam: AttackType
 --- !u!114 &3342485339922702196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,6 +321,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitRagdoll
   animator: {fileID: 0}
   impactForce: 2
+--- !u!114 &1429578717358984401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7183093526189999512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b31813c65fd412cb6037f722883f1ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Combat.UnitCombat
 --- !u!1001 &411184435666891832
 PrefabInstance:
   m_ObjectHideFlags: 0

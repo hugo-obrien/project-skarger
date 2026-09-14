@@ -1,4 +1,5 @@
 ﻿using System;
+using _Project.Scripts.Units.Stats;
 using UnityEngine;
 
 namespace _Project.Scripts.Units {
@@ -25,6 +26,9 @@ namespace _Project.Scripts.Units {
 
         [Header("Death")] [Min(0f)] 
         public float deathAnimationDuration = 1.5f;
+
+        [Header("Combat")] 
+        public CombatStats combat = new CombatStats();
 
     }
 }

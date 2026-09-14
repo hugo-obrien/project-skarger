@@ -1,4 +1,5 @@
 using System;
+using _Project.Scripts.Combat;
 using _Project.Scripts.UI;
 using _Project.Scripts.Utils;
 using UnityEngine;
@@ -32,6 +33,11 @@ namespace _Project.Scripts.Units {
         [SerializeField] private SpeechBubble speechBubblePrefab;
         [SerializeField] private Transform speechBubbleAnchor;
 
+        [Header("Combat")] 
+        [SerializeField] private string attackTrigger = "Attack";
+        [SerializeField] private string combatIdleTrigger = "IsInCombat";
+        [SerializeField] private string attackTypeParam = "AttackType";
+
         private NavMeshAgent agent;
         private bool isSelected;
         private int speedParameterHash;
@@ -48,6 +54,16 @@ namespace _Project.Scripts.Units {
 
         private SpeechBubble currentBubble;
 
+        private bool isInCombat;
+        private AttackType currentAttackType;
+        
+        private int attackTriggerHash;
+        private bool hasAttackTrigger;
+        private int combatIdleHash;
+        private bool hasCombatIdle;
+        private int attackTypeHash;
+        private bool hasAttackType;
+
         public UnitStats Stats => stats;
         public UnitFaction Faction => faction;
         public bool IsPlayerControlled => faction == UnitFaction.User;
@@ -55,6 +71,7 @@ namespace _Project.Scripts.Units {
         public bool IsDead => isDead;
         public float CurrentHealth => currentHealth;
         public float MaxHealth => stats.maxHealth;
+        public bool IsInCombat => isInCombat;
         
         public event Action<Unit> Destroyed;
         public event Action<Unit> Died; 
@@ -74,8 +91,12 @@ namespace _Project.Scripts.Units {
 
         private void Update() {
             if (isDead) return;
+
+            if (!isInCombat)
+            {
+                UpdateMovementSpeed();
+            }
             
-            UpdateMovementSpeed();
             RotateTowardsMovementDirection();
             UpdateAnimation();
         }
@@ -208,9 +229,54 @@ namespace _Project.Scripts.Units {
             currentBubble.Show(text, duration);
         }
 
+        public void SetCombatMode(AttackType attackType)
+        {
+            if (currentAttackType == attackType) return;
+
+            currentAttackType = attackType;
+            isInCombat = attackType != AttackType.None;
+            Debug.Log($"New combat mode: {isInCombat}");
+            
+            if (animator != null)
+            {
+                if (hasCombatIdle)
+                {
+                    animator.SetBool(combatIdleHash, isInCombat);
+                }
+
+                if (hasAttackType)
+                {
+                    animator.SetFloat(attackTypeHash, (float) attackType);
+                }
+            }
+        }
+
+        public void PlayAttackAnimation()
+        {
+            if (animator != null && hasAttackTrigger)
+            {
+                animator.SetTrigger(attackTriggerHash);
+            }
+        }
+
+        public void RotateTowards(Vector3 position)
+        {
+            Vector3 direction = position - transform.position;
+            direction.y = 0f;
+            if (direction.sqrMagnitude < 0.0001f) return;
+
+            Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * stats.turnSpeed);
+        }
+
         private void Die(Vector3? impactDirection = null) {
             if (isDead) return;
             isDead = true;
+
+            if (TryGetComponent<Combat.UnitCombat>(out var combat))
+            {
+                combat.StopCombat();
+            }
 
             if (isSelected) SetSelected(false);
 
@@ -327,6 +393,45 @@ namespace _Project.Scripts.Units {
                 foreach (var param in animator.parameters) {
                     if (param.type == AnimatorControllerParameterType.Trigger && param.name == deathTrigger) {
                         hasDeathTrigger = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(attackTrigger))
+            {
+                attackTriggerHash = Animator.StringToHash(attackTrigger);
+                foreach (var param in animator.parameters)
+                {
+                    if (param.type == AnimatorControllerParameterType.Trigger && param.name == attackTrigger)
+                    {
+                        hasAttackTrigger = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(combatIdleTrigger))
+            {
+                combatIdleHash = Animator.StringToHash(combatIdleTrigger);
+                foreach (var param in animator.parameters)
+                {
+                    if (param.type == AnimatorControllerParameterType.Bool && param.name == combatIdleTrigger)
+                    {
+                        hasCombatIdle = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(attackTypeParam))
+            {
+                attackTypeHash = Animator.StringToHash(attackTypeParam);
+                foreach (var param in animator.parameters)
+                {
+                    if (param.type == AnimatorControllerParameterType.Float && param.name == attackTypeParam)
+                    {
+                        hasAttackType = true;
                         break;
                     }
                 }

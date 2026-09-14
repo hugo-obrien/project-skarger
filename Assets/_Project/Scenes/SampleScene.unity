@@ -129,7 +129,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4125697375461346158, guid: 0671ad76bbce80442a00145d47c8f823, type: 3}
       propertyPath: faction
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6562767893101750493, guid: 0671ad76bbce80442a00145d47c8f823, type: 3}
       propertyPath: m_LocalPosition.x
@@ -893,6 +893,56 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 869963866}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &919231732
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 919231734}
+  - component: {fileID: 919231733}
+  m_Layer: 0
+  m_Name: GameTimeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &919231733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919231732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36db2737677046a3b233d519d4a2da7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Systems.GameTimeManager
+  pauseKey: 32
+  speedKey: 9
+  timeScales:
+  - 1
+  - 1.5
+  - 2
+--- !u!4 &919231734
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919231732}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.02424, y: 1.34574, z: 5.81387}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1036705252
 GameObject:
   m_ObjectHideFlags: 0
@@ -1766,6 +1816,10 @@ PrefabInstance:
       propertyPath: stats.runSpeed
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 4125697375461346158, guid: 0671ad76bbce80442a00145d47c8f823, type: 3}
+      propertyPath: stats.combat.isRanged
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4551351546116015934, guid: 0671ad76bbce80442a00145d47c8f823, type: 3}
       propertyPath: alignToGround
       value: 0
@@ -2444,3 +2498,4 @@ SceneRoots:
   - {fileID: 8904542739253997729}
   - {fileID: 1036705255}
   - {fileID: 26467409}
+  - {fileID: 919231734}
