@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace _Project.Scripts.Units.State
 {
     public class UnitStateMachine
@@ -6,6 +8,7 @@ namespace _Project.Scripts.Units.State
 
         public void ChangeState(UnitState newState)
         {
+            Debug.Log($"{newState.unit.name} move to {newState}");
             CurrentState?.Exit();
             CurrentState = newState;
             CurrentState?.Enter();

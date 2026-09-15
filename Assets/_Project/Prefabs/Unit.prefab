@@ -285,7 +285,7 @@ MonoBehaviour:
     combat:
       isRanged: 0
       aiControlled: 1
-      perceptionRadius: 15
+      perceptionRadius: 8
       targetSearchInterval: 0.5
       meleeRange: 2
       meleeDamage: 10

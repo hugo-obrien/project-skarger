@@ -25,8 +25,6 @@ namespace _Project.Scripts.Utils
 
             GameObject consoleInstance = Object.Instantiate(consolePrefab);
             consoleInstance.name = "DebugConsole_AutoInstance";
-            
-            LogUtil.Info("ConsoleAutoLoader", "Initialize", "Console successfully loaded");
         }
     }
 }

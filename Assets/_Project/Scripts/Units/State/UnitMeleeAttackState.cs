@@ -11,6 +11,7 @@ namespace _Project.Scripts.Units.State
 
         public override void Enter()
         {
+            Debug.Log($"{unit.name} transitions to UnitMeleeAttackState");
             attackTimer = 0f;
             unit.SetCombatMode(AttackType.Melee);
         }

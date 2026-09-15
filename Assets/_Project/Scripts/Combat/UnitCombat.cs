@@ -32,6 +32,7 @@ namespace _Project.Scripts.Combat
 
         public void Attack(Unit newTarget, bool force = true)
         {
+            Debug.Log($"{unit.name} start attack");
             if (newTarget == null || newTarget.IsDead) return;
             if (!force && IsActive && HasValidTarget) return;
 

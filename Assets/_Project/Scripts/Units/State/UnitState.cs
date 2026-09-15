@@ -4,7 +4,7 @@ namespace _Project.Scripts.Units.State
 {
     public abstract class UnitState
     {
-        protected readonly Unit unit;
+        public readonly Unit unit;
         protected readonly UnitCombat combat;
 
         protected UnitState(Unit unit, UnitCombat combat)

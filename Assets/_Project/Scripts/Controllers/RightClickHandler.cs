@@ -324,7 +324,7 @@ namespace _Project.Scripts.Controllers
             }
 
             if (!allReached) return;
-            Debug.Log($"All reached. Current move marker: {currentMoveMarker}, current interaction target {currentInteractionTarget}");
+            //Debug.Log($"All reached. Current move marker: {currentMoveMarker}, current interaction target {currentInteractionTarget}");
 
             if (currentMoveMarker != null)
             {

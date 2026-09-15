@@ -104,7 +104,7 @@ namespace _Project.Scripts.UI.Console {
             if (string.IsNullOrEmpty(command.Name)) return;
             
             commands[command.Name] = command;
-            LogUtil.Info("Console", "RegisterCommand", $"Command {command.Name} registered");
+            LogToConsole($"{command.Name} registered");
         }
         
         public void LogToConsole(string message, Color? color = null)

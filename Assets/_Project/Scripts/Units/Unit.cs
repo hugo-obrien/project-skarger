@@ -108,6 +108,7 @@ namespace _Project.Scripts.Units {
 
         private void OnEnable() {
             UnitRegistry.Register(this);
+            UpdateSelectionVisual();
         }
 
         private void OnDisable() {
@@ -115,22 +116,10 @@ namespace _Project.Scripts.Units {
         }
 
         public void SetSelected(bool value) {
-            if (isSelected == value) {
-                return;
-            }
+            if (isSelected == value) return;
 
             isSelected = value;
-            if (!selectionVisual) {
-                LogUtil.Warn("Unit", "SetSelected", "Selection visual is null");
-                return;
-            }
-            
-            if (value) {
-                Color selectedColor = UnitFactionColors.GetSelectionColor(faction);
-                selectionVisual.Show(transform, selectedColor);
-            } else {
-                selectionVisual.Hide();
-            }
+            UpdateSelectionVisual();
         }
 
         public bool MoveTo(Vector3 worldPosition) {
@@ -164,13 +153,14 @@ namespace _Project.Scripts.Units {
         }
 
         public void SetFaction(UnitFaction newFaction) {
+            UpdateSelectionVisual();
             if (isDead || faction == newFaction) {
                 return;
             }
             
             faction = newFaction;
 
-            if (isSelected && selectionVisual != null) {
+            /*if (isSelected && selectionVisual != null) {
                 Color newColor = UnitFactionColors.GetSelectionColor(newFaction);
                 selectionVisual.Show(transform, newColor);
             }
@@ -178,7 +168,7 @@ namespace _Project.Scripts.Units {
             if (faction != UnitFaction.User)
             {
                 stats.combat.aiControlled = true;
-            }
+            }*/
         }
 
         public void SetMovementMode(MovementMode mode) {
@@ -187,7 +177,6 @@ namespace _Project.Scripts.Units {
         }
 
         public void TakeDamage(float amount, Vector3? impactDirection = null) {
-            LogUtil.Info("Unit", "TakeDamage", $"{amount}");
             if (isDead || amount <= 0f) return;
 
             currentHealth -= amount;
@@ -237,11 +226,15 @@ namespace _Project.Scripts.Units {
 
         public void SetCombatMode(AttackType attackType)
         {
-            if (currentAttackType == attackType) return;
+            Debug.Log($"{name} set new combat mode {attackType}");
+            if (currentAttackType == attackType)
+            {
+                Debug.Log($"{name} current attack type same to new, skipping");
+                return;
+            }
 
             currentAttackType = attackType;
             isInCombat = attackType != AttackType.None;
-            Debug.Log($"New combat mode: {isInCombat}");
             
             if (animator != null)
             {
@@ -254,6 +247,44 @@ namespace _Project.Scripts.Units {
                 {
                     animator.SetFloat(attackTypeHash, (float) attackType);
                 }
+            }
+            
+            Debug.Log($"SetCombatMode: {name} set {attackType} mode. IsInCombat: {isInCombat}");
+            UpdateSelectionVisual();
+        }
+        
+        public void UpdateSelectionVisual()
+        {
+            //Debug.Log($"{name} update selection visual");
+            if (!selectionVisual) {
+                LogUtil.Warn("Unit", "SetSelected", "Selection visual is null");
+                return;
+            }
+
+            if (isDead)
+            {
+                Debug.Log($"{name} update selection visual. Is dead, skipping");
+                selectionVisual.Hide();
+                return;
+            }
+
+            if (isSelected)
+            {
+                Debug.Log($"{name} update selection visual. Is selected, use bright color");
+                Color baseColor = UnitFactionColors.GetSelectionColor(faction);
+                Color brightColor = Color.Lerp(baseColor, Color.white, 0.5f);
+                selectionVisual.Show(transform, brightColor);
+            }
+            else if (isInCombat)
+            {
+                Debug.Log($"{name} update selection visual. In combat, use default color");
+                Color defaultColor = UnitFactionColors.GetSelectionColor(faction);
+                selectionVisual.Show(transform, defaultColor);
+            }
+            else
+            {
+                Debug.Log($"{name} update selection visual. Else. Skipping");
+                selectionVisual.Hide();
             }
         }
 
