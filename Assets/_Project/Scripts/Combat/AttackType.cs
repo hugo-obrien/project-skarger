@@ -2,8 +2,8 @@ namespace _Project.Scripts.Combat
 {
     public enum AttackType
     {
-        None = -1,
-        Melee = 0,
-        Ranged = 1
+        None = 0,
+        Melee = 1,
+        Ranged = 2
     }
 }
