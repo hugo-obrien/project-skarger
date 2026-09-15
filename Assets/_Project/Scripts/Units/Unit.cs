@@ -1,6 +1,7 @@
 using System;
 using _Project.Scripts.Combat;
 using _Project.Scripts.UI;
+using _Project.Scripts.Units.Factions;
 using _Project.Scripts.Utils;
 using UnityEngine;
 using UnityEngine.AI;
@@ -172,6 +173,11 @@ namespace _Project.Scripts.Units {
             if (isSelected && selectionVisual != null) {
                 Color newColor = UnitFactionColors.GetSelectionColor(newFaction);
                 selectionVisual.Show(transform, newColor);
+            }
+
+            if (faction != UnitFaction.User)
+            {
+                stats.combat.aiControlled = true;
             }
         }
 

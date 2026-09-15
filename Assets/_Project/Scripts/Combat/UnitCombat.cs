@@ -16,6 +16,8 @@ namespace _Project.Scripts.Combat
         public bool IsActive { get; private set; }
         public Unit Target => target;
 
+        public bool HasValidTarget => target != null && !target.IsDead;
+
         private void Awake()
         {
             unit = GetComponent<Unit>();
@@ -28,9 +30,10 @@ namespace _Project.Scripts.Combat
             stateMachine.Tick(Time.deltaTime);
         }
 
-        public void Attack(Unit newTarget)
+        public void Attack(Unit newTarget, bool force = true)
         {
             if (newTarget == null || newTarget.IsDead) return;
+            if (!force && IsActive && HasValidTarget) return;
 
             target = newTarget;
             IsActive = true;

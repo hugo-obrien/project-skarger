@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _Project.Scripts.Units {
+namespace _Project.Scripts.Units.Factions {
     public enum UnitFaction
     {
         User,

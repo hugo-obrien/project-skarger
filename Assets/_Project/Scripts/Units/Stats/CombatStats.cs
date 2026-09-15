@@ -10,6 +10,11 @@ namespace _Project.Scripts.Units.Stats
         [Header("General")] 
         public bool isRanged = false;
 
+        [Header("AI")] 
+        public bool aiControlled = false;
+        [Min(0.1f)] public float perceptionRadius = 15f;
+        [Min(0.1f)] public float targetSearchInterval = 0.5f;
+        
         [Header("Melee")] 
         [Min(0.1f)] public float meleeRange = 2.0f;
         [Min(0.1f)] public float meleeDamage = 10f;
@@ -25,7 +30,6 @@ namespace _Project.Scripts.Units.Stats
         public Projectile projectilePrefab;
         [Min(0.1f)] public float projectileSpeed = 20f;
         [Min(0.1f)] public float projectileHitRadius = 0.5f;
-        
         
         [Header("Hit Effect")]
         public GameObject hitEffectPrefab;
