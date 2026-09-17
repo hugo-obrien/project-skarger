@@ -173,7 +173,7 @@ namespace _Project.Scripts.Controllers
 
             if (!disableEdgeScrollWhileMouseRotating || !mouseRotationActive)
             {
-                // moveInput += GetEdgeScrollInput(); todo rollback
+                moveInput += GetEdgeScrollInput();
             }
 
             moveInput = Vector2.ClampMagnitude(moveInput, MaxInputMagnitude);
