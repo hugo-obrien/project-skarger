@@ -255,35 +255,29 @@ namespace _Project.Scripts.Units {
         
         public void UpdateSelectionVisual()
         {
-            //Debug.Log($"{name} update selection visual");
             if (!selectionVisual) {
-                LogUtil.Warn("Unit", "SetSelected", "Selection visual is null");
                 return;
             }
 
             if (isDead)
             {
-                Debug.Log($"{name} update selection visual. Is dead, skipping");
                 selectionVisual.Hide();
                 return;
             }
 
             if (isSelected)
             {
-                Debug.Log($"{name} update selection visual. Is selected, use bright color");
                 Color baseColor = UnitFactionColors.GetSelectionColor(faction);
                 Color brightColor = Color.Lerp(baseColor, Color.white, 0.5f);
                 selectionVisual.Show(transform, brightColor);
             }
-            else if (isInCombat)
+            else if (IsPlayerControlled || isInCombat)
             {
-                Debug.Log($"{name} update selection visual. In combat, use default color");
                 Color defaultColor = UnitFactionColors.GetSelectionColor(faction);
                 selectionVisual.Show(transform, defaultColor);
             }
             else
             {
-                Debug.Log($"{name} update selection visual. Else. Skipping");
                 selectionVisual.Hide();
             }
         }
