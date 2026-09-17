@@ -48,7 +48,7 @@ namespace _Project.Scripts.Controllers
 
         private readonly List<Unit> activeMovers = new();
         private LayerMask unitLayer;
-        private MoveMarkerVisual currentMoveMarker;
+        private readonly List<MoveMarkerVisual> activeMoveMarkers = new List<MoveMarkerVisual>();
 
         private Unit currentInteractionTarget;
 
@@ -196,7 +196,7 @@ namespace _Project.Scripts.Controllers
             IReadOnlyList<Unit> units = selectionGroup.GetPlayerControlledUnits();
             if (units.Count == 0) return;
             
-            ClearMoveMarker();
+            ClearMoveMarkers();
             currentInteractionTarget = null;
             activeMovers.Clear();
 
@@ -217,7 +217,7 @@ namespace _Project.Scripts.Controllers
             
             activeMovers.Clear();
             currentInteractionTarget = targetUnit;
-            ClearMoveMarker();
+            ClearMoveMarkers();
 
             foreach (var unit in units)
             {
@@ -231,26 +231,30 @@ namespace _Project.Scripts.Controllers
 
         private void HandleMove(RaycastHit hit)
         {
-            HandleMove(hit.point);
-            if (activeMovers.Count > 0)
-            {
-                SpawnMoveMarker(hit.point, hit.normal);
-            }
+            IReadOnlyList<Unit> units = selectionGroup.GetPlayerControlledUnits();
+            if (units.Count == 0) return;
+            
+            IssueMoveCommand(units, hit.point, hit.normal);
         }
-        
+
         private void HandleMove(Vector3 point)
         {
             IReadOnlyList<Unit> units = selectionGroup.GetPlayerControlledUnits();
             if (units.Count == 0) return;
+            
+            IssueMoveCommand(units, point, null);
+        }
 
+        private void IssueMoveCommand(IReadOnlyList<Unit> units, Vector3 point, Vector3? normal = null)
+        {
             activeMovers.Clear();
-            ClearMoveMarker();
+            ClearMoveMarkers();
             currentInteractionTarget = null;
             
             float occupancyRadius = unitSpacing * occupancyRadiusFactor;
             IReadOnlyList<Vector3> destinations =
                 FormationResolver.BuildDestinations(units, point, unitSpacing, unitLayer, occupancyRadius);
-            
+
             for (int i = 0; i < units.Count; i++)
             {
                 Unit unit = units[i];
@@ -266,20 +270,14 @@ namespace _Project.Scripts.Controllers
                     activeMovers.Add(unit);
                 }
             }
-        }
 
-        private void ClearMoveMarker()
-        {
-            if (currentMoveMarker == null)
+            if (activeMovers.Count > 0 && normal.HasValue)
             {
-                return;
+                SpawnMoveMarkers(destinations, normal.Value);
             }
-
-            Destroy(currentMoveMarker.gameObject);
-            currentMoveMarker = null;
         }
 
-        private void SpawnMoveMarker(Vector3 point, Vector3 normal)
+        private void SpawnMoveMarkers(IReadOnlyList<Vector3> points, Vector3 normal)
         {
             if (moveMarkerPrefab == null)
             {
@@ -287,19 +285,23 @@ namespace _Project.Scripts.Controllers
                 return;
             }
 
-            ClearMoveMarker();
+            ClearMoveMarkers();
 
             Vector3 normalNormalized = normal.normalized;
-            Vector3 markerPosition = point + normalNormalized * moveMarkerOffset;
             Quaternion markerRotation = Quaternion.FromToRotation(Vector3.up, normalNormalized);
 
-            currentMoveMarker = Instantiate(moveMarkerPrefab, markerPosition, markerRotation);
-            currentMoveMarker.Setup(markerPosition, markerRotation, moveMarkerColor);
+            foreach (var point in points)
+            {
+                Vector3 markerPosition = point + normalNormalized * moveMarkerOffset;
+                var marker = Instantiate(moveMarkerPrefab, markerPosition, markerRotation);
+                marker.Setup(point, markerRotation, moveMarkerColor);
+                activeMoveMarkers.Add(marker);
+            }
         }
 
         private void HideMoveMarkerIfReached()
         {
-            if (currentMoveMarker == null && currentInteractionTarget == null)
+            if (activeMoveMarkers.Count == 0 && currentInteractionTarget == null)
             {
                 activeMovers.Clear();
                 return;
@@ -308,7 +310,7 @@ namespace _Project.Scripts.Controllers
             activeMovers.RemoveAll(unit => unit == null);
             if (activeMovers.Count == 0)
             {
-                ClearMoveMarker();
+                ClearMoveMarkers();
                 currentInteractionTarget = null;
                 return;
             }
@@ -324,12 +326,17 @@ namespace _Project.Scripts.Controllers
             }
 
             if (!allReached) return;
-            //Debug.Log($"All reached. Current move marker: {currentMoveMarker}, current interaction target {currentInteractionTarget}");
 
-            if (currentMoveMarker != null)
+            if (activeMoveMarkers.Count > 0)
             {
-                currentMoveMarker.FadeOutAndDestroy(moveMarkerFadeDuration);
-                currentMoveMarker = null;
+                foreach (var marker in activeMoveMarkers)
+                {
+                    if (marker != null)
+                    {
+                        marker.FadeOutAndDestroy(moveMarkerFadeDuration);
+                    }
+                }
+                activeMoveMarkers.Clear();
             }
 
             if (currentInteractionTarget != null)
@@ -339,6 +346,18 @@ namespace _Project.Scripts.Controllers
             }
             
             activeMovers.Clear();
+        }
+        
+        private void ClearMoveMarkers()
+        {
+            foreach (var marker in activeMoveMarkers)
+            {
+                if (marker != null)
+                {
+                    Destroy(marker.gameObject);
+                }
+                activeMoveMarkers.Clear();
+            }
         }
     }
 }

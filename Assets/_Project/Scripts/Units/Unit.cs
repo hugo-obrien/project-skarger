@@ -125,10 +125,11 @@ namespace _Project.Scripts.Units {
         public bool MoveTo(Vector3 worldPosition) {
             if (isDead || !agent || !agent.isOnNavMesh) return false;
 
+            agent.stoppingDistance = 0.05f;
             agent.isStopped = false;
 
-            if (NavMesh.SamplePosition(worldPosition, out NavMeshHit navHit, stats.destinationSnapDistance,
-                    NavMesh.AllAreas)) {
+            if (NavMesh.SamplePosition(worldPosition, out NavMeshHit navHit, stats.destinationSnapDistance, NavMesh.AllAreas)) 
+            {
                 worldPosition = navHit.position;
             } else {
                 return false;
@@ -159,16 +160,6 @@ namespace _Project.Scripts.Units {
             }
             
             faction = newFaction;
-
-            /*if (isSelected && selectionVisual != null) {
-                Color newColor = UnitFactionColors.GetSelectionColor(newFaction);
-                selectionVisual.Show(transform, newColor);
-            }
-
-            if (faction != UnitFaction.User)
-            {
-                stats.combat.aiControlled = true;
-            }*/
         }
 
         public void SetMovementMode(MovementMode mode) {
