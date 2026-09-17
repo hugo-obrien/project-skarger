@@ -153,13 +153,13 @@ namespace _Project.Scripts.Units {
             return agent.remainingDistance <= Mathf.Max(agent.stoppingDistance, tolerance);
         }
 
-        public void SetFaction(UnitFaction newFaction) {
-            UpdateSelectionVisual();
+        public void SetFaction(UnitFaction newFaction) { 
             if (isDead || faction == newFaction) {
                 return;
             }
             
             faction = newFaction;
+            UpdateSelectionVisual();
         }
 
         public void SetMovementMode(MovementMode mode) {
