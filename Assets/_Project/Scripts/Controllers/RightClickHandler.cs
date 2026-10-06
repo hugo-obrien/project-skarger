@@ -356,8 +356,8 @@ namespace _Project.Scripts.Controllers
                 {
                     Destroy(marker.gameObject);
                 }
-                activeMoveMarkers.Clear();
             }
+            activeMoveMarkers.Clear();
         }
     }
 }

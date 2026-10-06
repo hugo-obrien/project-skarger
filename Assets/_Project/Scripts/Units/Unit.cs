@@ -1,223 +1,158 @@
 using System;
 using _Project.Scripts.Combat;
+using _Project.Scripts.Movement;
 using _Project.Scripts.UI;
+using _Project.Scripts.Units.Components;
 using _Project.Scripts.Units.Factions;
+using _Project.Scripts.Units.Stats;
 using _Project.Scripts.Utils;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace _Project.Scripts.Units {
-
-    public enum MovementMode {
-        Auto,
-        ForcedWalk,
-        ForcedRun
-    }
-
-    [RequireComponent(typeof(NavMeshAgent))]
+    
+    /// <summary>
+    /// Unit facade: aggregates specialized components and provides a unified API for
+    /// external systems (state management, AI, console, input controllers). 
+    ///
+    /// SOLID:
+    /// - SRP: The Unit no longer implements movement, animation, health, death, selection, or speech bubbles—
+    ///   each responsibility is handled by a separate component
+    ///   (UnitMovement, UnitAnimatorController, UnitHealth, UnitDeathHandler,
+    ///    UnitSelectionVisualController, UnitSpeechBubblePresenter). 
+    /// - OCP: New reactions to death, selection, or combat are added by subscribing to Unit events,
+    ///   without modifying the Unit class itself. 
+    /// - LSP: All components are self-contained MonoBehaviours, interchangeable via event contracts. 
+    /// - ISP: Consumers depend only on the members they need (e.g., the console depends on TakeDamage/SaySomething),
+    ///   rather than on a "bloated" class combining animation, physics, and UI methods. 
+    /// - DIP: The Unit depends on abstractions (peer components) rather than directly on NavMeshAgent or Animator. 
+    /// </summary>
+    
+    [RequireComponent(typeof(UnitMovement))]
+    [RequireComponent(typeof(UnitHealth))]
+    [RequireComponent(typeof(UnitAnimatorController))]
+    [RequireComponent(typeof(UnitSelectionVisualController))]
     public class Unit : MonoBehaviour {
+        
         [Header("Faction")] [SerializeField] private UnitFaction faction = UnitFaction.User;
-        [Header("Stats")] [SerializeField] private UnitStats stats = new UnitStats();
-        [Header("Selector")] [SerializeField] private UnitSelectionVisual selectionVisual;
+        [Header("Stats")] [SerializeField] private UnitStats stats;
 
-        [Header("Animation")] 
-        [SerializeField] private Animator animator;
-        [SerializeField] private string speedParameter = "Speed";
-        [SerializeField] private bool disableRootMotion = true;
+        private UnitMovement movement;
+        private UnitHealth health;
+        private UnitAnimatorController animatorController;
+        private UnitSpeechBubblePresenter speechBubblePresenter;
         
-        [Header("Death & Physics")]
-        [SerializeField] private UnitRagdoll ragdoll;
-        [SerializeField] private CapsuleCollider rootCollider;
-        [SerializeField] private string deathTrigger = "Death";
-        
-        [Header("Speech Bubble")]
-        [SerializeField] private SpeechBubble speechBubblePrefab;
-        [SerializeField] private Transform speechBubbleAnchor;
-
-        [Header("Combat")] 
-        [SerializeField] private string attackTrigger = "Attack";
-        [SerializeField] private string combatIdleTrigger = "IsInCombat";
-        [SerializeField] private string attackTypeParam = "AttackType";
-
-        private NavMeshAgent agent;
         private bool isSelected;
-        private int speedParameterHash;
-        private bool hasSpeedParameter;
-
-        private MovementMode movementMode = MovementMode.Auto;
-        private bool isRunning;
-
-        private float currentHealth;
-        private bool isDead;
-
-        private int deathTriggerHash;
-        private bool hasDeathTrigger;
-
-        private SpeechBubble currentBubble;
-
         private bool isInCombat;
         private AttackType currentAttackType;
+        private Vector3? lastImpactDirection;
         
-        private int attackTriggerHash;
-        private bool hasAttackTrigger;
-        private int combatIdleHash;
-        private bool hasCombatIdle;
-        private int attackTypeHash;
-        private bool hasAttackType;
-
         public UnitStats Stats => stats;
         public UnitFaction Faction => faction;
+        
         public bool IsPlayerControlled => faction == UnitFaction.User;
-        public bool IsRunning => isRunning;
-        public bool IsDead => isDead;
-        public float CurrentHealth => currentHealth;
-        public float MaxHealth => stats.maxHealth;
+        public bool IsSelected => isSelected;
+        public bool IsRunning => movement != null && movement.IsRunning;
+        public bool IsDead => health != null && health.IsDead;
         public bool IsInCombat => isInCombat;
         
+        public float CurrentHealth => health != null ? health.CurrentHealth : 0f;
+        public float MaxHealth => health != null ? health.MaxHealth : 0f;
+
+        public Vector3? LastImpactDirection => lastImpactDirection;
+
         public event Action<Unit> Destroyed;
-        public event Action<Unit> Died; 
+        public event Action Died;
+        public event Action SelectionChanged;
+        public event Action FactionChanged;
+        public event Action CombatModeChanged;
+        
+        private void Awake()
+        {
+            movement = GetComponent<UnitMovement>();
+            health = GetComponent<UnitHealth>();
+            animatorController = GetComponent<UnitAnimatorController>();
+            speechBubblePresenter = GetComponent<UnitSpeechBubblePresenter>();
 
-        private void Awake() {
-            agent = GetComponent<NavMeshAgent>();
-            agent.updateRotation = false;
-
-            if (ragdoll == null) {
-                ragdoll = GetComponentInChildren<UnitRagdoll>(true);
-            }
-
-            SetupAnimator();
-            ApplyStatsToAgent();
-            currentHealth = stats.maxHealth;
-        }
-
-        private void Update() {
-            if (isDead) return;
-
-            if (!isInCombat)
+            if (movement == null)
             {
-                UpdateMovementSpeed();
+                Debug.Log($"{nameof(Unit)} requires {nameof(UnitMovement)} on the same GameObject");
             }
+            
+            if (health == null)
+            {
+                Debug.Log($"{nameof(Unit)} requires {nameof(UnitHealth)} on the same GameObject");
+            }
+            
+            health.Initialize(stats.maxHealth);
+            movement.Initialize();
+            animatorController.Initialize();
+        }
+        
+        private void Update() {
+            if (IsDead) return;
+
+            /*if (!isInCombat)
+            {
+                movement.Tick();
+            }*/
+            
+            movement.Tick();
             
             RotateTowardsMovementDirection();
             UpdateAnimation();
         }
-
+        
         private void OnDestroy() {
             Destroyed?.Invoke(this);
         }
 
         private void OnEnable() {
             UnitRegistry.Register(this);
-            UpdateSelectionVisual();
         }
 
         private void OnDisable() {
             UnitRegistry.Unregister(this);
         }
-
+        
         public void SetSelected(bool value) {
             if (isSelected == value) return;
 
             isSelected = value;
-            UpdateSelectionVisual();
+            SelectionChanged?.Invoke();
         }
 
-        public bool MoveTo(Vector3 worldPosition) {
-            if (isDead || !agent || !agent.isOnNavMesh) return false;
-
-            agent.stoppingDistance = 0.05f;
-            agent.isStopped = false;
-
-            if (NavMesh.SamplePosition(worldPosition, out NavMeshHit navHit, stats.destinationSnapDistance, NavMesh.AllAreas)) 
-            {
-                worldPosition = navHit.position;
-            } else {
-                return false;
-            }
-
-            return agent.SetDestination(worldPosition);
-        }
-
-        public void Stop() {
-            if (isDead || agent == null || !agent.isOnNavMesh) return;
-
-            agent.isStopped = true;
-            agent.ResetPath();
-        }
-
-        public bool HasReachedDestination(float tolerance = 0.2f) {
-            if (isDead || !agent || !agent.isOnNavMesh) return true;
-
-            if (agent.pathPending) return false;
-
-            return agent.remainingDistance <= Mathf.Max(agent.stoppingDistance, tolerance);
-        }
-
-        public void SetFaction(UnitFaction newFaction) { 
-            if (isDead || faction == newFaction) {
-                return;
-            }
-            
-            faction = newFaction;
-            UpdateSelectionVisual();
-        }
-
-        public void SetMovementMode(MovementMode mode) {
-            if (isDead) return;
-            movementMode = mode;
-        }
-
-        public void TakeDamage(float amount, Vector3? impactDirection = null) {
-            if (isDead || amount <= 0f) return;
-
-            currentHealth -= amount;
-            if (currentHealth <= 0f) {
-                currentHealth = 0;
-                Die(impactDirection);
-            }
-        }
-
-        public void SaySomething(string message) {
-            LogUtil.Info("Unit", "SaySomething", message);
-            ShowSpeechBubble(message);
-        }
-
-        public void Heal(float amount) {
-            if (isDead || currentHealth <= 0) return;
-            currentHealth = Mathf.Min(currentHealth + amount, stats.maxHealth);
-        }
-
-        public void ShowSpeechBubble(string text, float duration = 4f)
+        public void SetFaction(UnitFaction newFaction)
         {
-            Debug.Log($"Show speech bubble: {text}");
-            if (speechBubblePrefab == null)
-            {
-                LogUtil.Warn("Unit", "ShowSpeechBubble", "SpeechBubble prefab not set");
-                return;
-            }
+            if (IsDead || faction == newFaction) return;
 
-            if (currentBubble != null)
-            {
-                Destroy(currentBubble.gameObject);
-            }
-
-            Vector3 spawnPosition = speechBubbleAnchor != null
-                ? speechBubbleAnchor.position
-                : transform.position + Vector3.up * 2f;
-
-            currentBubble = Instantiate(speechBubblePrefab, spawnPosition, Quaternion.identity);
-
-            if (speechBubbleAnchor != null)
-            {
-                currentBubble.transform.SetParent(speechBubbleAnchor, worldPositionStays: true);
-            }
-            
-            currentBubble.Show(text, duration);
+            faction = newFaction;
+            FactionChanged?.Invoke();
+        }
+        
+        public bool MoveTo(Vector3 worldPosition)
+        {
+            return movement.MoveTo(worldPosition);
         }
 
+        public void Stop()
+        {
+            movement.Stop();
+        }
+
+        public bool HasReachedDestination(float tolerance = 0.2f)
+        {
+            return movement.HasReachedDestination(tolerance);
+        }
+
+        public void SetMovementMode(MovementMode mode)
+        {
+            movement.SetMovementMode(mode);
+        }
+        
         public void SetCombatMode(AttackType attackType)
         {
             Debug.Log($"{name} set new combat mode {attackType}");
+            
             if (currentAttackType == attackType)
             {
                 Debug.Log($"{name} current attack type same to new, skipping");
@@ -227,267 +162,87 @@ namespace _Project.Scripts.Units {
             currentAttackType = attackType;
             isInCombat = attackType != AttackType.None;
             
-            if (animator != null)
-            {
-                if (hasCombatIdle)
-                {
-                    animator.SetBool(combatIdleHash, isInCombat);
-                }
-
-                if (hasAttackType)
-                {
-                    animator.SetFloat(attackTypeHash, (float) attackType);
-                }
-            }
+            animatorController.SetCombatState(isInCombat, attackType);
             
             Debug.Log($"SetCombatMode: {name} set {attackType} mode. IsInCombat: {isInCombat}");
-            UpdateSelectionVisual();
+            CombatModeChanged?.Invoke();
         }
         
-        public void UpdateSelectionVisual()
-        {
-            if (!selectionVisual) {
-                return;
-            }
-
-            if (isDead)
-            {
-                selectionVisual.Hide();
-                return;
-            }
-
-            if (isSelected)
-            {
-                Color baseColor = UnitFactionColors.GetSelectionColor(faction);
-                Color brightColor = Color.Lerp(baseColor, Color.white, 0.5f);
-                selectionVisual.Show(transform, brightColor);
-            }
-            else if (IsPlayerControlled || isInCombat)
-            {
-                Color defaultColor = UnitFactionColors.GetSelectionColor(faction);
-                selectionVisual.Show(transform, defaultColor);
-            }
-            else
-            {
-                selectionVisual.Hide();
-            }
-        }
-
         public void PlayAttackAnimation()
         {
-            if (animator != null && hasAttackTrigger)
-            {
-                animator.SetTrigger(attackTriggerHash);
-            }
+            animatorController.PlayAttack();
         }
-
+        
         public void RotateTowards(Vector3 position)
         {
             Vector3 direction = position - transform.position;
-            direction.y = 0f;
-            if (direction.sqrMagnitude < 0.0001f) return;
-
-            Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * stats.turnSpeed);
+            RotateTowardsInternal(direction, Time.deltaTime * stats.turnSpeed);
         }
+        
+        public void TakeDamage(float amount, Vector3? impactDirection = null) {
+            if (amount <= 0f) return;
 
-        private void Die(Vector3? impactDirection = null) {
-            if (isDead) return;
-            isDead = true;
+            lastImpactDirection = impactDirection;
+            health.TakeDamage(amount, impactDirection);
 
-            if (TryGetComponent<Combat.UnitCombat>(out var combat))
+            if (health.IsDead)
             {
-                combat.StopCombat();
+                movement.SetDead(true);
+                
+                Died?.Invoke();
+                SetSelected(false);
             }
-
-            if (isSelected) SetSelected(false);
-
-            if (agent != null) {
-                agent.isStopped = true;
-                agent.updatePosition = false;
-                agent.updateRotation = false;
-                agent.enabled = false;
-            }
-
-            if (rootCollider != null) {
-                rootCollider.enabled = false;
-            }
-
-            StartCoroutine(DeathSequence(impactDirection));
-            Died?.Invoke(this);
         }
 
-        private void ApplyStatsToAgent() {
-            if (agent == null || !agent.isOnNavMesh) return;
-
-            agent.acceleration = stats.acceleration;
-            agent.stoppingDistance = stats.stoppingDistance;
+        public void Heal(float amount)
+        {
+            if (amount <= 0f) return;
+            health.Heal(amount);
         }
-
-        private void UpdateMovementSpeed() {
-            if (!agent || !agent.isOnNavMesh || agent.isStopped) {
+        
+        public void SaySomething(string message) {
+            LogUtil.Info("Unit", "SaySomething", message);
+            ShowSpeechBubble(message);
+        }
+        
+        public void ShowSpeechBubble(string text, float duration = 4f)
+        {
+            if (speechBubblePresenter == null)
+            {
+                LogUtil.Warn("Unit", "ShowSpeechBubble", "SpeechBubblePresenter is not set");
                 return;
             }
-
-            bool shouldRun = false;
-
-            switch (movementMode) {
-                case MovementMode.ForcedWalk: {
-                    shouldRun = false;
-                    break;
-                }
-                case MovementMode.ForcedRun: {
-                    shouldRun = true;
-                    break;
-                }
-                case MovementMode.Auto:
-                default: {
-                    float remainingDistance = agent.remainingDistance;
-                    if (float.IsPositiveInfinity(remainingDistance)) {
-                        shouldRun = true;
-                    } else {
-                        shouldRun = remainingDistance > stats.runDistanceThreshold;
-                    }
-                    break;
-                }
-            }
-
-            float targetSpeed = shouldRun ? stats.runSpeed : stats.walkSpeed;
-            if (Mathf.Abs(agent.speed - targetSpeed) > 0.01f) {
-                agent.speed = targetSpeed;
-            }
-
-            isRunning = shouldRun;
+            
+            speechBubblePresenter.Show(text, duration);
         }
-
+        
         private void RotateTowardsMovementDirection() {
-            if (agent == null || !agent.isOnNavMesh || agent.isStopped) return;
+            if (movement == null || !movement.IsMoving) return;
 
-            Vector3 direction = agent.desiredVelocity;
-            if (direction.sqrMagnitude < 0.001f) {
-                direction = agent.velocity;
+            Vector3 direction = movement.DesiredVelocity;
+            if (direction.sqrMagnitude < 0.001f)
+            {
+                direction = movement.Velocity;
             }
 
-            if (direction.sqrMagnitude < 0.001f) {
-                return;
-            }
+            RotateTowardsInternal(direction, Time.deltaTime * stats.turnSpeed);
+        }
 
+        private void RotateTowardsInternal(Vector3 direction, float slerpT)
+        {
             direction.y = 0f;
-
-            if (direction.sqrMagnitude < 0.0001f) {
-                return;
-            }
+            if (direction.sqrMagnitude < 0.001f) return;
 
             Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * stats.turnSpeed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, slerpT);
         }
 
-        private void SetupAnimator() {
-            if (animator == null) {
-                animator = GetComponentInChildren<Animator>(true);
-            }
+        private void UpdateAnimation()
+        {
+            if (animatorController == null) return;
 
-            if (animator == null) return;
-
-            if (disableRootMotion) {
-                animator.applyRootMotion = false;
-            }
-
-            if (animator.runtimeAnimatorController == null) {
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(speedParameter)) {
-                return;
-            }
-
-            speedParameterHash = Animator.StringToHash(speedParameter);
-
-            foreach (AnimatorControllerParameter parameter in animator.parameters) {
-                if (parameter.type == AnimatorControllerParameterType.Float && parameter.name == speedParameter) {
-                    hasSpeedParameter = true;
-                    break;
-                }
-            }
-
-            if (!string.IsNullOrWhiteSpace(deathTrigger)) {
-                deathTriggerHash = Animator.StringToHash(deathTrigger);
-                foreach (var param in animator.parameters) {
-                    if (param.type == AnimatorControllerParameterType.Trigger && param.name == deathTrigger) {
-                        hasDeathTrigger = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!string.IsNullOrWhiteSpace(attackTrigger))
-            {
-                attackTriggerHash = Animator.StringToHash(attackTrigger);
-                foreach (var param in animator.parameters)
-                {
-                    if (param.type == AnimatorControllerParameterType.Trigger && param.name == attackTrigger)
-                    {
-                        hasAttackTrigger = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!string.IsNullOrWhiteSpace(combatIdleTrigger))
-            {
-                combatIdleHash = Animator.StringToHash(combatIdleTrigger);
-                foreach (var param in animator.parameters)
-                {
-                    if (param.type == AnimatorControllerParameterType.Bool && param.name == combatIdleTrigger)
-                    {
-                        hasCombatIdle = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!string.IsNullOrWhiteSpace(attackTypeParam))
-            {
-                attackTypeHash = Animator.StringToHash(attackTypeParam);
-                foreach (var param in animator.parameters)
-                {
-                    if (param.type == AnimatorControllerParameterType.Float && param.name == attackTypeParam)
-                    {
-                        hasAttackType = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        private void UpdateAnimation() {
-            if (!animator || !hasSpeedParameter) {
-                return;
-            }
-
-            float speedValue = 0f;
-
-            if (agent && agent.isOnNavMesh && !agent.isStopped) {
-                speedValue = agent.velocity.magnitude;
-            }
-
-            animator.SetFloat(speedParameterHash, speedValue);
-        }
-
-        private System.Collections.IEnumerator DeathSequence(Vector3? impactDirection) {
-            if (animator != null && hasDeathTrigger) {
-                animator.SetTrigger(deathTriggerHash);
-            }
-
-            yield return new WaitForSeconds(stats.deathAnimationDuration);
-
-            if (ragdoll != null) {
-                LogUtil.Info("Unit", "DeathSequence", "Ragdoll on");
-                ragdoll.Activate(impactDirection);
-            } else if (animator != null) {
-                LogUtil.Info("Unit", "DeathSequence", "Ragdoll off");
-                animator.enabled = false;
-            }
+            float speedValue = movement != null && movement.IsMoving ? movement.Velocity.magnitude : 0f;
+            animatorController.SetSpeed(speedValue);
         }
     }
 }

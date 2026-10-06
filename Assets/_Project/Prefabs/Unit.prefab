@@ -189,6 +189,10 @@ GameObject:
   - component: {fileID: 3342485339922702196}
   - component: {fileID: 1429578717358984401}
   - component: {fileID: 4969821377434208725}
+  - component: {fileID: 750810211438354527}
+  - component: {fileID: 451002060158833858}
+  - component: {fileID: 7701768917217313637}
+  - component: {fileID: 1356763714584241544}
   m_Layer: 8
   m_Name: Unit
   m_TagString: Untagged
@@ -299,18 +303,6 @@ MonoBehaviour:
       projectileHitRadius: 0.5
       hitEffectPrefab: {fileID: 5371751816997110140, guid: 05537cbdf70f32f448e679003dc4b1bb, type: 3}
       hitEffectTime: 2
-  selectionVisual: {fileID: 4551351546116015934}
-  animator: {fileID: 0}
-  speedParameter: Speed
-  disableRootMotion: 1
-  ragdoll: {fileID: 0}
-  rootCollider: {fileID: 0}
-  deathTrigger: Death
-  speechBubblePrefab: {fileID: 934622326811685007, guid: b37c182c0c8de0441b14c71995dddbfc, type: 3}
-  speechBubbleAnchor: {fileID: 4459878377627995049}
-  attackTrigger: Attack
-  combatIdleTrigger: IsInCombat
-  attackTypeParam: AttackType
 --- !u!114 &3342485339922702196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -349,6 +341,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d83b03b8b8d0476a8e1153b60c1ef97d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Units.AI.UnitAI
+--- !u!114 &750810211438354527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7183093526189999512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 710d6d114dc44a1a8d68ff503e0bd7bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Units.Components.UnitMovement
+--- !u!114 &451002060158833858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7183093526189999512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa75837bbc4414d9c0d13e571794766, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Units.Components.UnitHealth
+  maxHealth: 100
+--- !u!114 &7701768917217313637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7183093526189999512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bd703a3098d48ecb3b6d0d6142787f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Units.Components.UnitAnimatorController
+  animator: {fileID: 0}
+  disableRootMotion: 1
+  speedParameter: Speed
+  deathTrigger: Death
+  attackTrigger: Attack
+  combatIdleTrigger: IsInCombat
+  attackTypeParam: AttackType
+--- !u!114 &1356763714584241544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7183093526189999512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fcdb38c87254a2d9d0c7c93876d8e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Units.Components.UnitSelectionVisualController
+  selectionVisual: {fileID: 4551351546116015934}
 --- !u!1001 &411184435666891832
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System;
 using _Project.Scripts.Combat;
 using _Project.Scripts.UI;
+using _Project.Scripts.Units.Components;
 using _Project.Scripts.Units.Factions;
 using UnityEngine;
 
@@ -12,12 +13,14 @@ namespace _Project.Scripts.Units.AI
     {
         private Unit unit;
         private UnitCombat combat;
+        private UnitSelectionVisualController selectionVisualController;
         private float nextSearchTime;
 
         private void Awake()
         {
             unit = GetComponent<Unit>();
             combat = GetComponent<UnitCombat>();
+            selectionVisualController = GetComponent<UnitSelectionVisualController>();
         }
 
         private void Update()
@@ -64,7 +67,7 @@ namespace _Project.Scripts.Units.AI
             {
                 combat.Attack(bestTarget, force: false);
                 
-                unit.UpdateSelectionVisual();
+                selectionVisualController?.Refresh();
             }
         }
         

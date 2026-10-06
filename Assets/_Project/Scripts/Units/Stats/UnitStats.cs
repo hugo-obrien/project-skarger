@@ -1,8 +1,7 @@
 ﻿using System;
-using _Project.Scripts.Units.Stats;
 using UnityEngine;
 
-namespace _Project.Scripts.Units {
+namespace _Project.Scripts.Units.Stats {
     
     [Serializable]
     public class UnitStats {
