@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3735275611238174087}
   - component: {fileID: 256695031809889604}
   m_Layer: 0
-  m_Name: HitPrefab
+  m_Name: RangedHitPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

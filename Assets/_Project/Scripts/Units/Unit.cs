@@ -31,6 +31,7 @@ namespace _Project.Scripts.Units {
     [RequireComponent(typeof(UnitHealth))]
     [RequireComponent(typeof(UnitAnimatorController))]
     [RequireComponent(typeof(UnitSelectionVisualController))]
+    [RequireComponent(typeof(UnitDeathHandler))]
     public class Unit : MonoBehaviour {
         
         [Header("Faction")] [SerializeField] private UnitFaction faction = UnitFaction.User;
@@ -151,11 +152,8 @@ namespace _Project.Scripts.Units {
         
         public void SetCombatMode(AttackType attackType)
         {
-            Debug.Log($"{name} set new combat mode {attackType}");
-            
             if (currentAttackType == attackType)
             {
-                Debug.Log($"{name} current attack type same to new, skipping");
                 return;
             }
 
@@ -164,7 +162,6 @@ namespace _Project.Scripts.Units {
             
             animatorController.SetCombatState(isInCombat, attackType);
             
-            Debug.Log($"SetCombatMode: {name} set {attackType} mode. IsInCombat: {isInCombat}");
             CombatModeChanged?.Invoke();
         }
         

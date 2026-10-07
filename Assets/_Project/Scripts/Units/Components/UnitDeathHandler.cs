@@ -99,11 +99,9 @@ namespace _Project.Scripts.Units.Components
 
             if (ragdoll != null)
             {
-                LogUtil.Info(nameof(UnitDeathHandler), nameof(DeathSequence), "Ragdoll on");
                 ragdoll.Activate(impactDirection);
             } else if (animatorController != null)
             {
-                LogUtil.Info(nameof(UnitDeathHandler), nameof(DeathSequence), "Ragdoll off");
                 animatorController.Disable();
             }
         }
