@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace _Project.Scripts.Units.State
 {
     public class UnitStateMachine

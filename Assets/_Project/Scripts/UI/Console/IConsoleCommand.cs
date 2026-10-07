@@ -61,7 +61,8 @@ namespace _Project.Scripts.UI.Console {
             int affectedCount = 0;
             foreach (var unit in selectionGroup.SelectedUnits) {
                 if (unit != null && !unit.IsDead) {
-                    unit.TakeDamage(damageAmount, Vector3.zero);
+                    // Пока в causer будет null, но потом можно смеху ради будет добавить реакцию юнитов на читы
+                    unit.TakeDamage(damageAmount, null, Vector3.zero);
                     affectedCount++;
                 }
             }

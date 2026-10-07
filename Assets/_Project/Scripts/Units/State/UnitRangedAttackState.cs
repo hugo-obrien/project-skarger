@@ -10,12 +10,6 @@ namespace _Project.Scripts.Units.State
         public UnitRangedAttackState(Unit unit, UnitCombat combat, WeaponProfile weaponProfile) : base(unit, combat, weaponProfile) { }
 
         protected override AttackType AttackType => AttackType.Ranged;
-        
-        public override void Enter()
-        {
-            Debug.Log($"{unit.name} transitions to UnitRangedAttackState");
-            base.Enter();
-        }
 
         protected override bool SuitableDistance(Vector3 targetPosition)
         {
@@ -47,13 +41,13 @@ namespace _Project.Scripts.Units.State
             if (profile.projectilePrefab ==null)
             {
                 Debug.LogWarning($"{nameof(UnitRangedAttackState)} of {unit.name}: profile.projectilePrefab == null");
-                target.TakeDamage(profile.damage);
+                target.TakeDamage(profile.damage, unit);
                 return;
             }
             
             Vector3 spawnPos = unit.transform.position + Vector3.up * 1.5f;
             Projectile projectile = Object.Instantiate(profile.projectilePrefab, spawnPos, Quaternion.identity);
-            projectile.Launch(target, profile);
+            projectile.Launch(unit, target, profile);
         }
     }
 }

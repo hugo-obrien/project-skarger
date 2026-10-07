@@ -9,12 +9,6 @@ namespace _Project.Scripts.Units.State
 
         protected override AttackType AttackType => AttackType.Melee;
 
-        public override void Enter()
-        {
-            Debug.Log($"{unit.name} transitions to UnitMeleeAttackState");
-            base.Enter();
-        }
-
         protected override bool SuitableDistance(Vector3 targetPosition)
         {
             float distance = Vector3.Distance(unit.transform.position, targetPosition);
@@ -30,7 +24,7 @@ namespace _Project.Scripts.Units.State
         protected override void PerformAttack(Unit target)
         {
             unit.PlayAttackAnimation();
-            target.TakeDamage(weaponProfile.damage);
+            target.TakeDamage(weaponProfile.damage, unit);
         }
     }
 }

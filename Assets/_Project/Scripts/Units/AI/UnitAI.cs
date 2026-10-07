@@ -16,6 +16,22 @@ namespace _Project.Scripts.Units.AI
         private UnitSelectionVisualController selectionVisualController;
         private float nextSearchTime;
 
+        private void OnEnable()
+        {
+            if (unit != null)
+            {
+                unit.ReceivedDamage += OnReceiveDamage;
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (unit != null)
+            {
+                unit.ReceivedDamage -= OnReceiveDamage;
+            }
+        }
+
         private void Awake()
         {
             unit = GetComponent<Unit>();
@@ -33,6 +49,16 @@ namespace _Project.Scripts.Units.AI
             nextSearchTime = Time.time + unit.Stats.combat.targetSearchInterval;
 
             TryFindTarget();
+        }
+
+        private void OnReceiveDamage(IDamageDealer causer)
+        {
+            if (combat.IsActive) return;
+
+            if (causer is Unit damageDealer)
+            {
+                combat.Attack(damageDealer, false);
+            }
         }
 
         private void TryFindTarget()

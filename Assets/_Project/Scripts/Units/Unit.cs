@@ -32,7 +32,7 @@ namespace _Project.Scripts.Units {
     [RequireComponent(typeof(UnitAnimatorController))]
     [RequireComponent(typeof(UnitSelectionVisualController))]
     [RequireComponent(typeof(UnitDeathHandler))]
-    public class Unit : MonoBehaviour {
+    public class Unit : MonoBehaviour, IDamageDealer {
         
         [Header("Faction")] [SerializeField] private UnitFaction faction = UnitFaction.User;
         [Header("Stats")] [SerializeField] private UnitStats stats;
@@ -62,6 +62,7 @@ namespace _Project.Scripts.Units {
         public Vector3? LastImpactDirection => lastImpactDirection;
 
         public event Action<Unit> Destroyed;
+        public event Action<IDamageDealer> ReceivedDamage;
         public event Action Died;
         public event Action SelectionChanged;
         public event Action FactionChanged;
@@ -91,11 +92,6 @@ namespace _Project.Scripts.Units {
         
         private void Update() {
             if (IsDead) return;
-
-            /*if (!isInCombat)
-            {
-                movement.Tick();
-            }*/
             
             movement.Tick();
             
@@ -176,7 +172,7 @@ namespace _Project.Scripts.Units {
             RotateTowardsInternal(direction, Time.deltaTime * stats.turnSpeed);
         }
         
-        public void TakeDamage(float amount, Vector3? impactDirection = null) {
+        public void TakeDamage(float amount, IDamageDealer causer, Vector3? impactDirection = null) {
             if (amount <= 0f) return;
 
             lastImpactDirection = impactDirection;
@@ -188,6 +184,12 @@ namespace _Project.Scripts.Units {
                 
                 Died?.Invoke();
                 SetSelected(false);
+                return;
+            }
+
+            if (causer != null)
+            {
+                ReceivedDamage?.Invoke(causer);
             }
         }
 

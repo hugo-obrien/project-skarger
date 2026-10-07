@@ -203,7 +203,7 @@ namespace _Project.Scripts.Controllers
             foreach (var unit in units)
             {
                 if (unit == null) continue;
-                if (unit.TryGetComponent<Combat.UnitCombat>(out var combat))
+                if (unit.TryGetComponent<UnitCombat>(out var combat))
                 {
                     combat.Attack(target);
                 }
