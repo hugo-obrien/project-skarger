@@ -4,6 +4,7 @@ namespace _Project.Scripts.Combat
     {
         None = 0,
         Melee = 1,
-        Ranged = 2
+        Ranged = 2,
+        Spell = 3
     }
 }

@@ -193,6 +193,7 @@ GameObject:
   - component: {fileID: 451002060158833858}
   - component: {fileID: 7701768917217313637}
   - component: {fileID: 1356763714584241544}
+  - component: {fileID: 5283565279700496356}
   m_Layer: 8
   m_Name: Unit
   m_TagString: Untagged
@@ -291,18 +292,6 @@ MonoBehaviour:
       aiControlled: 1
       perceptionRadius: 8
       targetSearchInterval: 0.5
-      meleeRange: 2
-      meleeDamage: 10
-      meleeAttackCooldown: 1
-      rangedMinRange: 0.1
-      rangedMaxRange: 20
-      rangedDamage: 2
-      rangedAttackCooldown: 2
-      projectilePrefab: {fileID: 8258415285002649392, guid: 7667f37ca8177e14398235285c885bfd, type: 3}
-      projectileSpeed: 20
-      projectileHitRadius: 0.5
-      hitEffectPrefab: {fileID: 5371751816997110140, guid: 05537cbdf70f32f448e679003dc4b1bb, type: 3}
-      hitEffectTime: 2
 --- !u!114 &3342485339922702196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -398,6 +387,52 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Units.Components.UnitSelectionVisualController
   selectionVisual: {fileID: 4551351546116015934}
+--- !u!114 &5283565279700496356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7183093526189999512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe76e391592e43f0a1228e1c3e85f48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Combat.DefaultWeaponProvider
+  defaultAttackType: 0
+  meleeProfile:
+    minRange: 0
+    maxRange: 2
+    damage: 10
+    attackCooldown: 1
+    usesProjectile: 0
+    projectilePrefab: {fileID: 0}
+    projectileSpeed: 20
+    projectileHitRadius: 0.5
+    hitEffectPrefab: {fileID: 0}
+    hitEffectLifetime: 2
+  rangedProfile:
+    minRange: 3
+    maxRange: 20
+    damage: 4
+    attackCooldown: 2
+    usesProjectile: 1
+    projectilePrefab: {fileID: 0}
+    projectileSpeed: 20
+    projectileHitRadius: 0.5
+    hitEffectPrefab: {fileID: 0}
+    hitEffectLifetime: 2
+  spellProfile:
+    minRange: 3
+    maxRange: 30
+    damage: 20
+    attackCooldown: 5
+    usesProjectile: 1
+    projectilePrefab: {fileID: 0}
+    projectileSpeed: 20
+    projectileHitRadius: 0.5
+    hitEffectPrefab: {fileID: 0}
+    hitEffectLifetime: 2
 --- !u!1001 &411184435666891832
 PrefabInstance:
   m_ObjectHideFlags: 0

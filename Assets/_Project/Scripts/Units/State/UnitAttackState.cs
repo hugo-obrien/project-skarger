@@ -7,13 +7,25 @@ namespace _Project.Scripts.Units.State
     public abstract class UnitAttackState : UnitState
     {
         protected float attackTimer;
-        
-        protected UnitAttackState(Unit unit, UnitCombat combat) : base(unit, combat) { }
-        
-        protected abstract float AttackCooldown { get; }
+
+        protected readonly WeaponProfile weaponProfile;
+        protected abstract AttackType AttackType { get; }
+
+        protected UnitAttackState(Unit unit, UnitCombat combat, WeaponProfile weaponProfile) : base(unit, combat)
+        {
+            this.weaponProfile = weaponProfile ?? new WeaponProfile();
+        }
+
+        protected virtual float AttackCooldown => weaponProfile.attackCooldown;
 
         protected abstract bool SuitableDistance(Vector3 distance);
         protected abstract void PerformAttack(Unit target);
+
+        public override void Enter()
+        {
+            attackTimer = 0f;
+            unit.SetCombatMode(AttackType);
+        }
 
         public override void Tick(float deltaTime)
         {

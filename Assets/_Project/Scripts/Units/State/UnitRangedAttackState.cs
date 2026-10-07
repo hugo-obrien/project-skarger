@@ -7,27 +7,27 @@ namespace _Project.Scripts.Units.State
 {
     public class UnitRangedAttackState : UnitAttackState
     {
-        public UnitRangedAttackState(Unit unit, UnitCombat combat) : base(unit, combat) { }
+        public UnitRangedAttackState(Unit unit, UnitCombat combat, WeaponProfile weaponProfile) : base(unit, combat, weaponProfile) { }
 
-        protected override float AttackCooldown => unit.Stats.combat.rangedAttackCooldown;
+        protected override AttackType AttackType => AttackType.Ranged;
         
         public override void Enter()
         {
-            attackTimer = 0f;
-            unit.SetCombatMode(AttackType.Ranged);
+            Debug.Log($"{unit.name} transitions to UnitRangedAttackState");
+            base.Enter();
         }
 
         protected override bool SuitableDistance(Vector3 targetPosition)
         {
             float distance = Vector3.Distance(unit.transform.position, targetPosition);
-            if (distance < unit.Stats.combat.rangedMinRange)
+            if (distance < weaponProfile.minRange)
             {
                 Vector3 away = (unit.transform.position - targetPosition).normalized;
                 unit.MoveTo(unit.transform.position + away * 2f);
                 return false;
             }
 
-            if (distance > unit.Stats.combat.rangedMaxRange)
+            if (distance > weaponProfile.maxRange)
             {
                 unit.MoveTo(targetPosition);
                 return false;
@@ -39,21 +39,21 @@ namespace _Project.Scripts.Units.State
         protected override void PerformAttack(Unit target)
         {
             unit.PlayAttackAnimation();
-            SpawnProjectile(target, unit.Stats.combat);
+            SpawnProjectile(target, weaponProfile);
         }
 
-        private void SpawnProjectile(Unit target, CombatStats stats)
+        protected virtual void SpawnProjectile(Unit target, WeaponProfile profile)
         {
-            if (stats.projectilePrefab == null)
+            if (profile.projectilePrefab ==null)
             {
-                LogUtil.Warn("UnitRangedAttackState", "SpawnProjectile", "Projectile prefab is null");
-                target.TakeDamage(stats.rangedDamage);
+                Debug.LogWarning($"{nameof(UnitRangedAttackState)} of {unit.name}: profile.projectilePrefab == null");
+                target.TakeDamage(profile.damage);
                 return;
             }
-
+            
             Vector3 spawnPos = unit.transform.position + Vector3.up * 1.5f;
-            Projectile projectile = Object.Instantiate(stats.projectilePrefab, spawnPos, Quaternion.identity);
-            projectile.Launch(target, stats);
+            Projectile projectile = Object.Instantiate(profile.projectilePrefab, spawnPos, Quaternion.identity);
+            projectile.Launch(target, profile);
         }
     }
 }
