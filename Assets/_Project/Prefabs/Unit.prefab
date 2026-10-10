@@ -429,7 +429,7 @@ MonoBehaviour:
     damage: 20
     attackCooldown: 5
     usesProjectile: 1
-    projectilePrefab: {fileID: 0}
+    projectilePrefab: {fileID: 8258415285002649392, guid: e14152e75e77aa341b2683cc801f3051, type: 3}
     projectileSpeed: 20
     projectileHitRadius: 0.5
     hitEffectPrefab: {fileID: 0}
@@ -507,6 +507,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4957605393579145644, guid: 4f46098734d87e24490aef9267915ad2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3680521174473350379}
     - targetCorrespondingSourceObject: {fileID: 4957605393944723153, guid: 4f46098734d87e24490aef9267915ad2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7899196849779274855}
@@ -758,6 +761,24 @@ CharacterJoint:
   m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!1 &4717557744322760084 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4957605393579145644, guid: 4f46098734d87e24490aef9267915ad2, type: 3}
+  m_PrefabInstance: {fileID: 411184435666891832}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3680521174473350379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4717557744322760084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab6e912ebb1d4cdbab2bb675094bd7be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Systems.AnimationEventProxy
+  unit: {fileID: 0}
 --- !u!4 &4717557744322760086 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4957605393579145646, guid: 4f46098734d87e24490aef9267915ad2, type: 3}
