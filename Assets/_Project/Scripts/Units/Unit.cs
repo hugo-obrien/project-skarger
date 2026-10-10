@@ -13,18 +13,6 @@ namespace _Project.Scripts.Units {
     /// <summary>
     /// Unit facade: aggregates specialized components and provides a unified API for
     /// external systems (state management, AI, console, input controllers). 
-    ///
-    /// SOLID:
-    /// - SRP: The Unit no longer implements movement, animation, health, death, selection, or speech bubbles—
-    ///   each responsibility is handled by a separate component
-    ///   (UnitMovement, UnitAnimatorController, UnitHealth, UnitDeathHandler,
-    ///    UnitSelectionVisualController, UnitSpeechBubblePresenter). 
-    /// - OCP: New reactions to death, selection, or combat are added by subscribing to Unit events,
-    ///   without modifying the Unit class itself. 
-    /// - LSP: All components are self-contained MonoBehaviours, interchangeable via event contracts. 
-    /// - ISP: Consumers depend only on the members they need (e.g., the console depends on TakeDamage/SaySomething),
-    ///   rather than on a "bloated" class combining animation, physics, and UI methods. 
-    /// - DIP: The Unit depends on abstractions (peer components) rather than directly on NavMeshAgent or Animator. 
     /// </summary>
     
     [RequireComponent(typeof(UnitMovement))]
@@ -67,6 +55,7 @@ namespace _Project.Scripts.Units {
         public event Action SelectionChanged;
         public event Action FactionChanged;
         public event Action CombatModeChanged;
+        public event Action<string> OnAnimationEvent;
         
         private void Awake()
         {
@@ -214,7 +203,13 @@ namespace _Project.Scripts.Units {
             
             speechBubblePresenter.Show(text, duration);
         }
-        
+
+        public void DispatchAnimationEvent(string eventName)
+        {
+            Debug.Log("Unit.DispatchAnimationEvent() called");
+            OnAnimationEvent?.Invoke(eventName);
+        }
+
         private void RotateTowardsMovementDirection() {
             if (movement == null || !movement.IsMoving) return;
 

@@ -1,8 +1,8 @@
-using _Project.Scripts.Units;
+using _Project.Scripts.Combat;
 using _Project.Scripts.Units.State;
 using UnityEngine;
 
-namespace _Project.Scripts.Combat
+namespace _Project.Scripts.Units.Components
 {
     [RequireComponent(typeof(Unit))]
     public class UnitCombat : MonoBehaviour
@@ -84,7 +84,7 @@ namespace _Project.Scripts.Combat
 
         private IWeaponProvider FindSceneWeaponProvider()
         {
-            var provider = FindObjectOfType<DefaultWeaponProvider>();
+            var provider = FindAnyObjectByType<DefaultWeaponProvider>();
             if (provider != null && provider.gameObject.scene.IsValid())
             {
                 return provider;

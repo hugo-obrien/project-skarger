@@ -1,4 +1,5 @@
 using _Project.Scripts.Combat;
+using _Project.Scripts.Units.Components;
 using UnityEngine;
 
 namespace _Project.Scripts.Units.State
