@@ -7,8 +7,9 @@
 
 Вся проектная документация находится в папке [`/Docs`](Docs/README.md):
 - [Game Design Document](Docs/GDD/GDD.md)
-- [Technical Design Documents](Docs/TDD/) (скоро)
-- [Narrative Design Documents](Docs/NDD/) (скоро)
+- [Technical Design Documents](Docs/TDD/) (~~не~~скоро)
+- [Narrative Design Documents](Docs/NDD/) (~~не~~скоро)
+- [Roadmap](Docs/Roadmap.md)
 
 ## 🛠 Технологии
 
