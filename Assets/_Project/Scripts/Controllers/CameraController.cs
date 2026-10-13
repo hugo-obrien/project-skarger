@@ -30,7 +30,7 @@ namespace _Project.Scripts.Controllers
         [SerializeField] private float maxZoomOffset = 13f;
         [SerializeField] private LayerMask groundLayer;
 
-        private CameraControls controls;
+        private GameControls controls;
 
         private float pendingZoomInput;
         private Vector2 pendingMouseDelta;
@@ -245,7 +245,7 @@ namespace _Project.Scripts.Controllers
                 return;
             }
 
-            controls = new CameraControls();
+            controls = new GameControls();
 
             controls.CameraControl.Zoom.performed += OnZoomPerformed;
             controls.CameraControl.RotateMouseDelta.performed += OnRotateMouseDeltaPerformed;
