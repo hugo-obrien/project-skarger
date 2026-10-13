@@ -3,6 +3,7 @@ using _Project.Scripts.Units;
 using _Project.Scripts.Units.Factions;
 using _Project.Scripts.Utils;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace _Project.Scripts.Dev {
     public class DevSpawner : MonoBehaviour {
@@ -15,6 +16,8 @@ namespace _Project.Scripts.Dev {
 
         [SerializeField] private Camera mainCamera;
         [SerializeField] private LayerMask groundLayer;
+
+        private GameplayControls controls;
 
         private void Reset() {
             mainCamera = Camera.main;
@@ -31,6 +34,20 @@ namespace _Project.Scripts.Dev {
                     LogUtil.Error("DevSpawner", "Awake", "MainCamera not found");
                 }
             }
+
+            controls = new GameplayControls();
+        }
+
+        private void OnEnable() {
+            controls?.Gameplay.Enable();
+        }
+
+        private void OnDisable() {
+            controls?.Gameplay.Disable();
+        }
+
+        private void OnDestroy() {
+            controls?.Dispose();
         }
 
         private void Update() {
@@ -38,22 +55,22 @@ namespace _Project.Scripts.Dev {
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.F1)) {
+            if (controls.Gameplay.SpawnUser.WasPressedThisFrame()) {
                 SpawnAtMouse(UnitFaction.User);
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.F2)) {
+            if (controls.Gameplay.SpawnAllied.WasPressedThisFrame()) {
                 SpawnAtMouse(UnitFaction.Allied);
                 return;
             }
             
-            if (Input.GetKeyDown(KeyCode.F3)) {
+            if (controls.Gameplay.SpawnNeutral.WasPressedThisFrame()) {
                 SpawnAtMouse(UnitFaction.Neutral);
                 return;
             }
             
-            if (Input.GetKeyDown(KeyCode.F4)) {
+            if (controls.Gameplay.SpawnEnemy.WasPressedThisFrame()) {
                 SpawnAtMouse(UnitFaction.Enemy);
             }
         }
@@ -77,7 +94,7 @@ namespace _Project.Scripts.Dev {
                 return;
             }
 
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = mainCamera.ScreenPointToRay(controls.Gameplay.Pointer.ReadValue());
             if (Physics.Raycast(ray, out RaycastHit hit, 1000f, groundLayer, QueryTriggerInteraction.Ignore))
             {
                 Vector3 spawnPosition = hit.point + Vector3.up * spawnHeightOffset;

@@ -7,6 +7,7 @@ using _Project.Scripts.Units.Components;
 using _Project.Scripts.Units.Factions;
 using _Project.Scripts.Utils;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace _Project.Scripts.Controllers
 {
@@ -54,6 +55,8 @@ namespace _Project.Scripts.Controllers
 
         private void Awake()
         {
+            InitializeInput();
+
             if (!TryGetComponent(out selectionGroup))
             {
                 LogUtil.Error("RightClickHandler", "Awake", "Selection group not found");
@@ -70,6 +73,33 @@ namespace _Project.Scripts.Controllers
             }
         }
 
+        private GameplayControls controls;
+
+        private void OnEnable()
+        {
+            controls?.Gameplay.Enable();
+        }
+
+        private void OnDisable()
+        {
+            controls?.Gameplay.Disable();
+        }
+
+        private void OnDestroy()
+        {
+            controls?.Dispose();
+        }
+
+        private void InitializeInput()
+        {
+            if (controls != null)
+            {
+                return;
+            }
+
+            controls = new GameplayControls();
+        }
+
         private void Update()
         {
             if (camera == null)
@@ -82,7 +112,8 @@ namespace _Project.Scripts.Controllers
                 }
             }
 
-            if (Input.GetMouseButtonDown(1) && !UiUtils.IsPointerOverUI() && selectionGroup.HasPlayerControlledUnits())
+            if (controls.Gameplay.RightClick.WasPressedThisFrame() && !UiUtils.IsPointerOverUI() &&
+                selectionGroup.HasPlayerControlledUnits())
             {
                 HandleRightClick();
             }
@@ -92,7 +123,7 @@ namespace _Project.Scripts.Controllers
 
         private void HandleRightClick()
         {
-            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = camera.ScreenPointToRay(controls.Gameplay.Pointer.ReadValue());
 
             RaycastHit[] hits = Physics.RaycastAll(ray, maxRaycastDistance, combinedClickedMask,
                 QueryTriggerInteraction.Ignore);

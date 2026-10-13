@@ -861,8 +861,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36db2737677046a3b233d519d4a2da7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Systems.GameTimeManager
-  pauseKey: 32
-  speedKey: 9
   timeScales:
   - 1
   - 1.5

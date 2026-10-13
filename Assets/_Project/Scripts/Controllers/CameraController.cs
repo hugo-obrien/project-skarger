@@ -201,7 +201,7 @@ namespace _Project.Scripts.Controllers
 
         private Vector2 GetEdgeScrollInput()
         {
-            Vector2 pointerPosition = Input.mousePosition;
+            Vector2 pointerPosition = controls.CameraControl.PointerPosition.ReadValue<Vector2>();
             if (UiUtils.IsPointerOverUI())
             {
                 return Vector2.zero;

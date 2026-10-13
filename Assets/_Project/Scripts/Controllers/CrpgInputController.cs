@@ -1,7 +1,8 @@
+using UnityEngine;
 using _Project.Scripts.UI;
 using _Project.Scripts.Units;
 using _Project.Scripts.Utils;
-using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace _Project.Scripts.Controllers
 {
@@ -10,10 +11,10 @@ namespace _Project.Scripts.Controllers
     [RequireComponent(typeof(RightClickHandler))]
     public class CrpgInputController : MonoBehaviour
     {
-        [Header("Camera")] [SerializeField] private Camera mainCamera;
+        [Header("Camera")] [SerializeField] private UnityEngine.Camera mainCamera;
 
         [Header("Layers")] [SerializeField] private LayerMask unitLayer = 1;
-        
+
         [Header("Selection box")] [SerializeField]
         private SelectionBoxOverlay selectionBoxOverlay;
 
@@ -24,7 +25,9 @@ namespace _Project.Scripts.Controllers
         private SelectionGroup selectionGroup;
         private SelectionHandler selectionHandler;
         private RightClickHandler rightClickHandler;
-        
+
+        private GameplayControls controls;
+
         private void Awake()
         {
             if (!TryGetComponent(out selectionGroup))
@@ -42,42 +45,71 @@ namespace _Project.Scripts.Controllers
             {
                 MainCamera = mainCamera
             };
+
+            InitializeInput();
         }
 
         private void Reset()
         {
-            mainCamera = Camera.main;
+            mainCamera = UnityEngine.Camera.main;
+        }
+
+        private void OnEnable()
+        {
+            controls?.Gameplay.Enable();
+        }
+
+        private void OnDisable()
+        {
+            controls?.Gameplay.Disable();
+        }
+
+        private void OnDestroy()
+        {
+            controls?.Dispose();
         }
 
         private void Update()
         {
             if (mainCamera == null)
             {
-                mainCamera = Camera.main;
+                mainCamera = UnityEngine.Camera.main;
                 if (mainCamera == null) return;
                 selectionHandler.MainCamera = mainCamera;
             }
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (controls.Gameplay.Cancel.WasPressedThisFrame())
             {
                 selectionHandler.ClearSelection();
                 return;
             }
 
-            if (Input.GetMouseButtonDown(0) && !UiUtils.IsPointerOverUI())
+            var pointerPosition = controls.Gameplay.Pointer.ReadValue();
+
+            if (controls.Gameplay.LeftClick.WasPressedThisFrame() && !UiUtils.IsPointerOverUI())
             {
-                selectionHandler.OnLeftMouseDown(Input.mousePosition);
+                selectionHandler.OnLeftMouseDown(pointerPosition);
             }
 
-            if (Input.GetMouseButton(0))
+            if (controls.Gameplay.LeftClick.isPressed)
             {
-                selectionHandler.OnLeftMouseHeld(Input.mousePosition);
+                selectionHandler.OnLeftMouseHeld(pointerPosition);
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (controls.Gameplay.LeftClick.WasReleasedThisFrame())
             {
-                selectionHandler.OnLeftMouseUp(Input.mousePosition, UiUtils.IsShiftPressed());
+                selectionHandler.OnLeftMouseUp(pointerPosition, UiUtils.IsShiftPressed());
             }
+        }
+
+        private void InitializeInput()
+        {
+            if (controls != null)
+            {
+                return;
+            }
+
+            controls = new GameplayControls();
         }
     }
 }

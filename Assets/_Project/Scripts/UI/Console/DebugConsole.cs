@@ -4,6 +4,7 @@ using _Project.Scripts.Units;
 using _Project.Scripts.Utils;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace _Project.Scripts.UI.Console {
     public class DebugConsole : MonoBehaviour {
@@ -14,9 +15,10 @@ namespace _Project.Scripts.UI.Console {
         [SerializeField] private TMP_InputField inputField;
 
         [Header("Settings")] 
-        [SerializeField] private KeyCode toggleKey = KeyCode.BackQuote;
         [SerializeField] private float defaultDamage = 50f;
         [SerializeField] private GameObject consolePanel;
+
+        private GameplayControls controls;
 
         private Dictionary<string, IConsoleCommand> commands;
         private bool isOpen;
@@ -46,14 +48,28 @@ namespace _Project.Scripts.UI.Console {
         private void Awake() {
             DontDestroyOnLoad(gameObject);
             Initialize();
+
+            controls = new GameplayControls();
+        }
+
+        private void OnEnable() {
+            controls?.Gameplay.Enable();
+        }
+
+        private void OnDisable() {
+            controls?.Gameplay.Disable();
+        }
+
+        private void OnDestroy() {
+            controls?.Dispose();
         }
 
         private void Update() {
-            if (Input.GetKeyDown(toggleKey)) {
+            if (controls.Gameplay.ToggleConsole.WasPressedThisFrame()) {
                 ToggleConsole();
             }
 
-            if (isOpen && Input.GetKeyDown(KeyCode.Escape))
+            if (isOpen && controls.Gameplay.Cancel.WasPressedThisFrame())
             {
                 ToggleConsole();
             }

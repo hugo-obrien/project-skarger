@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace _Project.Scripts.Systems
 {
@@ -7,14 +7,12 @@ namespace _Project.Scripts.Systems
     {
         public static GameTimeManager Instance { get; private set; }
 
-        [Header("Pause")] 
-        [SerializeField] private KeyCode pauseKey = KeyCode.Space;
-        
-        [Header("Speed")]
-        [SerializeField] private KeyCode speedKey = KeyCode.Tab;
+        [Header("Time scales")]
         [SerializeField] private float[] timeScales = { 1f, 1.5f, 2f };
 
         private int currentSpeedIndex;
+
+        private GameplayControls controls;
         
         public bool IsPaused { get; private set; }
         public float CurrentTimeScale => timeScales[currentSpeedIndex];
@@ -28,16 +26,28 @@ namespace _Project.Scripts.Systems
             }
 
             Instance = this;
+
+            controls = new GameplayControls();
+        }
+
+        private void OnEnable()
+        {
+            controls?.Gameplay.Enable();
+        }
+
+        private void OnDisable()
+        {
+            controls?.Gameplay.Disable();
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(pauseKey))
+            if (controls.Gameplay.Pause.WasPressedThisFrame())
             {
                 TogglePause();
             }
 
-            if (Input.GetKeyDown(speedKey))
+            if (controls.Gameplay.Speed.WasPressedThisFrame())
             {
                 CycleSpeed();
             }
@@ -45,6 +55,8 @@ namespace _Project.Scripts.Systems
 
         private void OnDestroy()
         {
+            controls?.Dispose();
+
             if (Instance == this)
             {
                 Time.timeScale = 1f;

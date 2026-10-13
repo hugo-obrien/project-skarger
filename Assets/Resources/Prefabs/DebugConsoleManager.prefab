@@ -207,7 +207,6 @@ MonoBehaviour:
   selectionGroup: {fileID: 0}
   consoleLogItemUI: {fileID: 4170462399322908895}
   inputField: {fileID: 2139977330562686502}
-  toggleKey: 96
   defaultDamage: 50
   consolePanel: {fileID: 8771904213959062147}
 --- !u!114 &4170462399322908895

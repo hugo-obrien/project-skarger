@@ -1,0 +1,239 @@
+{
+    "version": 1,
+    "name": "GameplayControls",
+    "maps": [
+        {
+            "name": "Gameplay",
+            "id": "5e20ae3c-492a-4a0d-afee-a5527b01b7b1",
+            "actions": [
+                {
+                    "name": "Pointer",
+                    "type": "Value",
+                    "id": "a1ef9dc4-8e01-424c-96f0-d77c2bb6e23f",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true,
+                    "priority": 0
+                },
+                {
+                    "name": "LeftClick",
+                    "type": "Button",
+                    "id": "2bee5faa-8a52-448c-9172-2845e2223a0c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "RightClick",
+                    "type": "Button",
+                    "id": "1c71743c-85b0-4374-b526-7401e3186845",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "Shift",
+                    "type": "Button",
+                    "id": "d1a064fd-e7e6-4116-ad73-c2c711801eec",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "Cancel",
+                    "type": "Button",
+                    "id": "3c4f8ef4-15e1-4574-9666-45e84d323987",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "6acc1bb3-ec7b-43a3-aa08-79d384d67108",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "Speed",
+                    "type": "Button",
+                    "id": "316f30c0-2936-41e8-91ab-7f834933ad0c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "ToggleConsole",
+                    "type": "Button",
+                    "id": "85783601-7574-4559-86a2-20d89184f959",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "SpawnUser",
+                    "type": "Button",
+                    "id": "5762ba29-22bb-4166-af01-d5dfba230c1b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "SpawnAllied",
+                    "type": "Button",
+                    "id": "8d5de908-32e9-41af-8a0b-76d7a5246da5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "SpawnNeutral",
+                    "type": "Button",
+                    "id": "b0a687cd-3658-4733-a47b-ae2b0dd10b27",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "SpawnEnemy",
+                    "type": "Button",
+                    "id": "32549353-491f-47ae-b64f-349d68cda896",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "action": "Pointer",
+                    "id": "3b81d29a-6af1-4ee4-a06b-6d3cf103119e",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                },
+                {
+                    "action": "LeftClick",
+                    "id": "f42d84f5-50e8-4e6a-af58-8c7fe7761511",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                },
+                {
+                    "action": "RightClick",
+                    "id": "70e66fcc-a652-47e5-8958-7b16345b056a",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                },
+                {
+                    "action": "Shift",
+                    "id": "a6282bd5-bd56-4fd2-8521-3f36722ce314",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                },
+                {
+                    "action": "Shift",
+                    "id": "1e692a7e-ef10-48b9-adf8-3f1f6b7a123d",
+                    "path": "<Keyboard>/rightShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                },
+                {
+                    "action": "Cancel",
+                    "id": "e17fb779-d403-429c-a076-9a059c1e8bbf",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                },
+                {
+                    "action": "Pause",
+                    "id": "51f6af61-d1b4-4463-9ec7-00af31facec9",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                },
+                {
+                    "action": "Speed",
+                    "id": "32ceb560-95b3-4b6c-8945-7db24658bdba",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                },
+                {
+                    "action": "ToggleConsole",
+                    "id": "ad1516ff-4381-49c6-9f92-ab605e7b0146",
+                    "path": "<Keyboard>/backquote",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                },
+                {
+                    "action": "SpawnUser",
+                    "id": "cfc8cfa7-c604-4e60-b050-1a886d149a5e",
+                    "path": "<Keyboard>/f1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                },
+                {
+                    "action": "SpawnAllied",
+                    "id": "5740551c-1f0d-4d33-97cd-289c54e7d88c",
+                    "path": "<Keyboard>/f2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                },
+                {
+                    "action": "SpawnNeutral",
+                    "id": "9ddedae4-f96c-4e41-bae5-566e71710cbb",
+                    "path": "<Keyboard>/f3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                },
+                {
+                    "action": "SpawnEnemy",
+                    "id": "f18e9adb-1d3f-4898-a5f3-522fd693ab91",
+                    "path": "<Keyboard>/f4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ""
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
