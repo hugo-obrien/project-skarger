@@ -85,6 +85,26 @@
                     "interactions": "",
                     "initialStateCheck": false,
                     "priority": 0
+                },
+                {
+                    "name": "PointerPosition",
+                    "type": "Value",
+                    "id": "7d1c9a4e-3b2f-4e8a-9c61-5f0a2b8d4e13",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true,
+                    "priority": 0
+                },
+                {
+                    "name": "Modifier",
+                    "type": "Button",
+                    "id": "4c8b1e7a-9d2f-4a6e-b3c5-1f7e8d9a0b26",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
                 }
             ],
             "bindings": [
@@ -296,6 +316,28 @@
                     "action": "Skills1-0",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2a6e8f1b-5c4d-4b7a-9e3f-0d1c2b3a4e55",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PointerPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8e3f2a1d-6b5c-4d9e-a7f0-2c1b3a4d5e67",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Modifier",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -347,16 +389,6 @@
                     "name": "RotateMouseDelta",
                     "type": "Value",
                     "id": "ff3e7531-ad53-4c3d-aee3-95474f16f1a1",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true,
-                    "priority": 0
-                },
-                {
-                    "name": "PointerPosition",
-                    "type": "Value",
-                    "id": "f2ebe054-d2f0-4322-b604-50ec264a0a9a",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -540,22 +572,11 @@
                     "action": "RotateMouseDelta",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "acbf1c38-5842-4162-9f8a-232db3c1781e",
-                    "path": "<Mouse>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "PointerPosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         },
         {
-            "name": "Debug",
+            "name": "DevTools",
             "id": "0bc04bf9-4c2e-4b24-9fd9-ada536d3b13b",
             "actions": [
                 {
@@ -569,9 +590,39 @@
                     "priority": 0
                 },
                 {
-                    "name": "SpawnUnit",
+                    "name": "SpawnUser",
                     "type": "Button",
                     "id": "c69356d2-777e-4d81-a39f-c54e3da03e24",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "SpawnAllied",
+                    "type": "Button",
+                    "id": "b1a2c3d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "SpawnNeutral",
+                    "type": "Button",
+                    "id": "e5f6a7b8-9c0d-4e1f-a2b3-c4d5e6f7a8b9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "SpawnEnemy",
+                    "type": "Button",
+                    "id": "0c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -598,7 +649,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SpawnUnit",
+                    "action": "SpawnUser",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -609,7 +660,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SpawnUnit",
+                    "action": "SpawnAllied",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -620,7 +671,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SpawnUnit",
+                    "action": "SpawnNeutral",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -631,7 +682,36 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SpawnUnit",
+                    "action": "SpawnEnemy",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Console",
+            "id": "9f4a7c2e-1b3d-4e5f-8a6b-7c8d9e0f1a2b",
+            "actions": [
+                {
+                    "name": "CloseConsole",
+                    "type": "Button",
+                    "id": "3e7d1f9a-2c4b-4d8e-9f0a-1b2c3d4e5f6a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6b5a4c3d-2e1f-4a0b-9c8d-7e6f5a4b3c2d",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CloseConsole",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

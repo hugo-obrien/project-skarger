@@ -14,11 +14,12 @@ namespace _Project.Scripts.UI.Console {
         [SerializeField] private TMP_InputField inputField;
 
         [Header("Settings")] 
-        [SerializeField] private KeyCode toggleKey = KeyCode.BackQuote;
+        
         [SerializeField] private float defaultDamage = 50f;
         [SerializeField] private GameObject consolePanel;
 
         private Dictionary<string, IConsoleCommand> commands;
+        private GameControls controls;
         private bool isOpen;
         private bool isInitialized;
         
@@ -49,18 +50,30 @@ namespace _Project.Scripts.UI.Console {
         }
 
         private void Update() {
-            if (Input.GetKeyDown(toggleKey)) {
+            if (controls.DevTools.ToggleConsole.WasPressedThisFrame()) {
                 ToggleConsole();
             }
 
-            if (isOpen && Input.GetKeyDown(KeyCode.Escape))
+            if (isOpen && controls.Console.CloseConsole.WasPressedThisFrame())
             {
                 ToggleConsole();
             }
         }
         
+                private void OnEnable()
+        {
+            controls ??= new GameControls();
+            controls.Enable();
+        }
+
+        private void OnDisable()
+        {
+            controls?.Disable();
+        }
+
         private void OnDestroy()
         {
+            controls?.Dispose();
             inputField.onEndEdit.RemoveListener(OnInputSubmitted);
         }
         
@@ -156,6 +169,7 @@ namespace _Project.Scripts.UI.Console {
             }
 
             inputField.text = "";
+            inputField.ActivateInputField();
         }
     }
 }

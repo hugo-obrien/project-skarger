@@ -1,11 +1,8 @@
 # Roadmap v.0.1
 # План на ближайшее время
 ## Спринт 0: Полный переход на новую систему инпута (Unity Input System)
-### 0.0 Переход на новую систему инпута
-**Проблема:** `CameraController.cs` использует новый Input System (CameraControls), но все еще 
-`Input.mousePosition`. `CrpgInputController.cs`, `RightClickHandler.cs`, 
-`UiUtils.cs`, `DevSpawner.cs`, `GameTimeManager.cs`, `DebugConsole.cs` - все на 
-старом Input 
+### 0.0 Переход на новую систему инпута ✅
+**Статус:** выполнено. Все контроллеры переведены на `GameControls` (Unity Input System), `Active Input Handling` переключён на `Input System Package (New)`, `UiUtils.IsShiftPressed()` удалён. 
 
 **Что нужно сделать:**
 - Создать единый InputActions файл для всех игровых действий 

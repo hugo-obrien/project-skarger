@@ -171,6 +171,26 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""PointerPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""7d1c9a4e-3b2f-4e8a-9c61-5f0a2b8d4e13"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Modifier"",
+                    ""type"": ""Button"",
+                    ""id"": ""4c8b1e7a-9d2f-4a6e-b3c5-1f7e8d9a0b26"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -382,6 +402,28 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""Skills1-0"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2a6e8f1b-5c4d-4b7a-9e3f-0d1c2b3a4e55"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PointerPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8e3f2a1d-6b5c-4d9e-a7f0-2c1b3a4d5e67"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Modifier"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -433,16 +475,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""name"": ""RotateMouseDelta"",
                     ""type"": ""Value"",
                     ""id"": ""ff3e7531-ad53-4c3d-aee3-95474f16f1a1"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true,
-                    ""priority"": 0
-                },
-                {
-                    ""name"": ""PointerPosition"",
-                    ""type"": ""Value"",
-                    ""id"": ""f2ebe054-d2f0-4322-b604-50ec264a0a9a"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -626,22 +658,11 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""RotateMouseDelta"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""acbf1c38-5842-4162-9f8a-232db3c1781e"",
-                    ""path"": ""<Mouse>/position"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""PointerPosition"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         },
         {
-            ""name"": ""Debug"",
+            ""name"": ""DevTools"",
             ""id"": ""0bc04bf9-4c2e-4b24-9fd9-ada536d3b13b"",
             ""actions"": [
                 {
@@ -655,9 +676,39 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""priority"": 0
                 },
                 {
-                    ""name"": ""SpawnUnit"",
+                    ""name"": ""SpawnUser"",
                     ""type"": ""Button"",
                     ""id"": ""c69356d2-777e-4d81-a39f-c54e3da03e24"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SpawnAllied"",
+                    ""type"": ""Button"",
+                    ""id"": ""b1a2c3d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SpawnNeutral"",
+                    ""type"": ""Button"",
+                    ""id"": ""e5f6a7b8-9c0d-4e1f-a2b3-c4d5e6f7a8b9"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""SpawnEnemy"",
+                    ""type"": ""Button"",
+                    ""id"": ""0c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -684,7 +735,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SpawnUnit"",
+                    ""action"": ""SpawnUser"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -695,7 +746,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SpawnUnit"",
+                    ""action"": ""SpawnAllied"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -706,7 +757,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SpawnUnit"",
+                    ""action"": ""SpawnNeutral"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -717,7 +768,36 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SpawnUnit"",
+                    ""action"": ""SpawnEnemy"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Console"",
+            ""id"": ""9f4a7c2e-1b3d-4e5f-8a6b-7c8d9e0f1a2b"",
+            ""actions"": [
+                {
+                    ""name"": ""CloseConsole"",
+                    ""type"": ""Button"",
+                    ""id"": ""3e7d1f9a-2c4b-4d8e-9f0a-1b2c3d4e5f6a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""6b5a4c3d-2e1f-4a0b-9c8d-7e6f5a4b3c2d"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CloseConsole"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -736,6 +816,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_GameControl_Pause = m_GameControl.FindAction("Pause", throwIfNotFound: true);
         m_GameControl_SpeedUp = m_GameControl.FindAction("SpeedUp", throwIfNotFound: true);
         m_GameControl_Skills10 = m_GameControl.FindAction("Skills1-0", throwIfNotFound: true);
+        m_GameControl_PointerPosition = m_GameControl.FindAction("PointerPosition", throwIfNotFound: true);
+        m_GameControl_Modifier = m_GameControl.FindAction("Modifier", throwIfNotFound: true);
         // CameraControl
         m_CameraControl = asset.FindActionMap("CameraControl", throwIfNotFound: true);
         m_CameraControl_Move = m_CameraControl.FindAction("Move", throwIfNotFound: true);
@@ -743,18 +825,24 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_CameraControl_Zoom = m_CameraControl.FindAction("Zoom", throwIfNotFound: true);
         m_CameraControl_RotateMouseButton = m_CameraControl.FindAction("RotateMouseButton", throwIfNotFound: true);
         m_CameraControl_RotateMouseDelta = m_CameraControl.FindAction("RotateMouseDelta", throwIfNotFound: true);
-        m_CameraControl_PointerPosition = m_CameraControl.FindAction("PointerPosition", throwIfNotFound: true);
-        // Debug
-        m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
-        m_Debug_ToggleConsole = m_Debug.FindAction("ToggleConsole", throwIfNotFound: true);
-        m_Debug_SpawnUnit = m_Debug.FindAction("SpawnUnit", throwIfNotFound: true);
+        // DevTools
+        m_DevTools = asset.FindActionMap("DevTools", throwIfNotFound: true);
+        m_DevTools_ToggleConsole = m_DevTools.FindAction("ToggleConsole", throwIfNotFound: true);
+        m_DevTools_SpawnUser = m_DevTools.FindAction("SpawnUser", throwIfNotFound: true);
+        m_DevTools_SpawnAllied = m_DevTools.FindAction("SpawnAllied", throwIfNotFound: true);
+        m_DevTools_SpawnNeutral = m_DevTools.FindAction("SpawnNeutral", throwIfNotFound: true);
+        m_DevTools_SpawnEnemy = m_DevTools.FindAction("SpawnEnemy", throwIfNotFound: true);
+        // Console
+        m_Console = asset.FindActionMap("Console", throwIfNotFound: true);
+        m_Console_CloseConsole = m_Console.FindAction("CloseConsole", throwIfNotFound: true);
     }
 
     ~@GameControls()
     {
         UnityEngine.Debug.Assert(!m_GameControl.enabled, "This will cause a leak and performance issues, GameControls.GameControl.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_CameraControl.enabled, "This will cause a leak and performance issues, GameControls.CameraControl.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_Debug.enabled, "This will cause a leak and performance issues, GameControls.Debug.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_DevTools.enabled, "This will cause a leak and performance issues, GameControls.DevTools.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Console.enabled, "This will cause a leak and performance issues, GameControls.Console.Disable() has not been called.");
     }
 
     /// <summary>
@@ -838,6 +926,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_GameControl_Pause;
     private readonly InputAction m_GameControl_SpeedUp;
     private readonly InputAction m_GameControl_Skills10;
+    private readonly InputAction m_GameControl_PointerPosition;
+    private readonly InputAction m_GameControl_Modifier;
     /// <summary>
     /// Provides access to input actions defined in input action map "GameControl".
     /// </summary>
@@ -881,6 +971,14 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "GameControl/Skills10".
         /// </summary>
         public InputAction @Skills10 => m_Wrapper.m_GameControl_Skills10;
+        /// <summary>
+        /// Provides access to the underlying input action "GameControl/PointerPosition".
+        /// </summary>
+        public InputAction @PointerPosition => m_Wrapper.m_GameControl_PointerPosition;
+        /// <summary>
+        /// Provides access to the underlying input action "GameControl/Modifier".
+        /// </summary>
+        public InputAction @Modifier => m_Wrapper.m_GameControl_Modifier;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -931,6 +1029,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Skills10.started += instance.OnSkills10;
             @Skills10.performed += instance.OnSkills10;
             @Skills10.canceled += instance.OnSkills10;
+            @PointerPosition.started += instance.OnPointerPosition;
+            @PointerPosition.performed += instance.OnPointerPosition;
+            @PointerPosition.canceled += instance.OnPointerPosition;
+            @Modifier.started += instance.OnModifier;
+            @Modifier.performed += instance.OnModifier;
+            @Modifier.canceled += instance.OnModifier;
         }
 
         /// <summary>
@@ -966,6 +1070,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Skills10.started -= instance.OnSkills10;
             @Skills10.performed -= instance.OnSkills10;
             @Skills10.canceled -= instance.OnSkills10;
+            @PointerPosition.started -= instance.OnPointerPosition;
+            @PointerPosition.performed -= instance.OnPointerPosition;
+            @PointerPosition.canceled -= instance.OnPointerPosition;
+            @Modifier.started -= instance.OnModifier;
+            @Modifier.performed -= instance.OnModifier;
+            @Modifier.canceled -= instance.OnModifier;
         }
 
         /// <summary>
@@ -1008,7 +1118,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_CameraControl_Zoom;
     private readonly InputAction m_CameraControl_RotateMouseButton;
     private readonly InputAction m_CameraControl_RotateMouseDelta;
-    private readonly InputAction m_CameraControl_PointerPosition;
     /// <summary>
     /// Provides access to input actions defined in input action map "CameraControl".
     /// </summary>
@@ -1040,10 +1149,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "CameraControl/RotateMouseDelta".
         /// </summary>
         public InputAction @RotateMouseDelta => m_Wrapper.m_CameraControl_RotateMouseDelta;
-        /// <summary>
-        /// Provides access to the underlying input action "CameraControl/PointerPosition".
-        /// </summary>
-        public InputAction @PointerPosition => m_Wrapper.m_CameraControl_PointerPosition;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1085,9 +1190,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @RotateMouseDelta.started += instance.OnRotateMouseDelta;
             @RotateMouseDelta.performed += instance.OnRotateMouseDelta;
             @RotateMouseDelta.canceled += instance.OnRotateMouseDelta;
-            @PointerPosition.started += instance.OnPointerPosition;
-            @PointerPosition.performed += instance.OnPointerPosition;
-            @PointerPosition.canceled += instance.OnPointerPosition;
         }
 
         /// <summary>
@@ -1114,9 +1216,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @RotateMouseDelta.started -= instance.OnRotateMouseDelta;
             @RotateMouseDelta.performed -= instance.OnRotateMouseDelta;
             @RotateMouseDelta.canceled -= instance.OnRotateMouseDelta;
-            @PointerPosition.started -= instance.OnPointerPosition;
-            @PointerPosition.performed -= instance.OnPointerPosition;
-            @PointerPosition.canceled -= instance.OnPointerPosition;
         }
 
         /// <summary>
@@ -1151,34 +1250,49 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     /// </summary>
     public CameraControlActions @CameraControl => new CameraControlActions(this);
 
-    // Debug
-    private readonly InputActionMap m_Debug;
-    private List<IDebugActions> m_DebugActionsCallbackInterfaces = new List<IDebugActions>();
-    private readonly InputAction m_Debug_ToggleConsole;
-    private readonly InputAction m_Debug_SpawnUnit;
+    // DevTools
+    private readonly InputActionMap m_DevTools;
+    private List<IDevToolsActions> m_DevToolsActionsCallbackInterfaces = new List<IDevToolsActions>();
+    private readonly InputAction m_DevTools_ToggleConsole;
+    private readonly InputAction m_DevTools_SpawnUser;
+    private readonly InputAction m_DevTools_SpawnAllied;
+    private readonly InputAction m_DevTools_SpawnNeutral;
+    private readonly InputAction m_DevTools_SpawnEnemy;
     /// <summary>
-    /// Provides access to input actions defined in input action map "Debug".
+    /// Provides access to input actions defined in input action map "DevTools".
     /// </summary>
-    public struct DebugActions
+    public struct DevToolsActions
     {
         private @GameControls m_Wrapper;
 
         /// <summary>
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
-        public DebugActions(@GameControls wrapper) { m_Wrapper = wrapper; }
+        public DevToolsActions(@GameControls wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Debug/ToggleConsole".
+        /// Provides access to the underlying input action "DevTools/ToggleConsole".
         /// </summary>
-        public InputAction @ToggleConsole => m_Wrapper.m_Debug_ToggleConsole;
+        public InputAction @ToggleConsole => m_Wrapper.m_DevTools_ToggleConsole;
         /// <summary>
-        /// Provides access to the underlying input action "Debug/SpawnUnit".
+        /// Provides access to the underlying input action "DevTools/SpawnUser".
         /// </summary>
-        public InputAction @SpawnUnit => m_Wrapper.m_Debug_SpawnUnit;
+        public InputAction @SpawnUser => m_Wrapper.m_DevTools_SpawnUser;
+        /// <summary>
+        /// Provides access to the underlying input action "DevTools/SpawnAllied".
+        /// </summary>
+        public InputAction @SpawnAllied => m_Wrapper.m_DevTools_SpawnAllied;
+        /// <summary>
+        /// Provides access to the underlying input action "DevTools/SpawnNeutral".
+        /// </summary>
+        public InputAction @SpawnNeutral => m_Wrapper.m_DevTools_SpawnNeutral;
+        /// <summary>
+        /// Provides access to the underlying input action "DevTools/SpawnEnemy".
+        /// </summary>
+        public InputAction @SpawnEnemy => m_Wrapper.m_DevTools_SpawnEnemy;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
-        public InputActionMap Get() { return m_Wrapper.m_Debug; }
+        public InputActionMap Get() { return m_Wrapper.m_DevTools; }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
         public void Enable() { Get().Enable(); }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
@@ -1186,9 +1300,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
         public bool enabled => Get().enabled;
         /// <summary>
-        /// Implicitly converts an <see ref="DebugActions" /> to an <see ref="InputActionMap" /> instance.
+        /// Implicitly converts an <see ref="DevToolsActions" /> to an <see ref="InputActionMap" /> instance.
         /// </summary>
-        public static implicit operator InputActionMap(DebugActions set) { return set.Get(); }
+        public static implicit operator InputActionMap(DevToolsActions set) { return set.Get(); }
         /// <summary>
         /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
         /// </summary>
@@ -1196,17 +1310,26 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
         /// </remarks>
-        /// <seealso cref="DebugActions" />
-        public void AddCallbacks(IDebugActions instance)
+        /// <seealso cref="DevToolsActions" />
+        public void AddCallbacks(IDevToolsActions instance)
         {
-            if (instance == null || m_Wrapper.m_DebugActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_DebugActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_DevToolsActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_DevToolsActionsCallbackInterfaces.Add(instance);
             @ToggleConsole.started += instance.OnToggleConsole;
             @ToggleConsole.performed += instance.OnToggleConsole;
             @ToggleConsole.canceled += instance.OnToggleConsole;
-            @SpawnUnit.started += instance.OnSpawnUnit;
-            @SpawnUnit.performed += instance.OnSpawnUnit;
-            @SpawnUnit.canceled += instance.OnSpawnUnit;
+            @SpawnUser.started += instance.OnSpawnUser;
+            @SpawnUser.performed += instance.OnSpawnUser;
+            @SpawnUser.canceled += instance.OnSpawnUser;
+            @SpawnAllied.started += instance.OnSpawnAllied;
+            @SpawnAllied.performed += instance.OnSpawnAllied;
+            @SpawnAllied.canceled += instance.OnSpawnAllied;
+            @SpawnNeutral.started += instance.OnSpawnNeutral;
+            @SpawnNeutral.performed += instance.OnSpawnNeutral;
+            @SpawnNeutral.canceled += instance.OnSpawnNeutral;
+            @SpawnEnemy.started += instance.OnSpawnEnemy;
+            @SpawnEnemy.performed += instance.OnSpawnEnemy;
+            @SpawnEnemy.canceled += instance.OnSpawnEnemy;
         }
 
         /// <summary>
@@ -1215,24 +1338,33 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <remarks>
         /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
         /// </remarks>
-        /// <seealso cref="DebugActions" />
-        private void UnregisterCallbacks(IDebugActions instance)
+        /// <seealso cref="DevToolsActions" />
+        private void UnregisterCallbacks(IDevToolsActions instance)
         {
             @ToggleConsole.started -= instance.OnToggleConsole;
             @ToggleConsole.performed -= instance.OnToggleConsole;
             @ToggleConsole.canceled -= instance.OnToggleConsole;
-            @SpawnUnit.started -= instance.OnSpawnUnit;
-            @SpawnUnit.performed -= instance.OnSpawnUnit;
-            @SpawnUnit.canceled -= instance.OnSpawnUnit;
+            @SpawnUser.started -= instance.OnSpawnUser;
+            @SpawnUser.performed -= instance.OnSpawnUser;
+            @SpawnUser.canceled -= instance.OnSpawnUser;
+            @SpawnAllied.started -= instance.OnSpawnAllied;
+            @SpawnAllied.performed -= instance.OnSpawnAllied;
+            @SpawnAllied.canceled -= instance.OnSpawnAllied;
+            @SpawnNeutral.started -= instance.OnSpawnNeutral;
+            @SpawnNeutral.performed -= instance.OnSpawnNeutral;
+            @SpawnNeutral.canceled -= instance.OnSpawnNeutral;
+            @SpawnEnemy.started -= instance.OnSpawnEnemy;
+            @SpawnEnemy.performed -= instance.OnSpawnEnemy;
+            @SpawnEnemy.canceled -= instance.OnSpawnEnemy;
         }
 
         /// <summary>
-        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="DebugActions.UnregisterCallbacks(IDebugActions)" />.
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="DevToolsActions.UnregisterCallbacks(IDevToolsActions)" />.
         /// </summary>
-        /// <seealso cref="DebugActions.UnregisterCallbacks(IDebugActions)" />
-        public void RemoveCallbacks(IDebugActions instance)
+        /// <seealso cref="DevToolsActions.UnregisterCallbacks(IDevToolsActions)" />
+        public void RemoveCallbacks(IDevToolsActions instance)
         {
-            if (m_Wrapper.m_DebugActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_DevToolsActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
@@ -1242,21 +1374,117 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
         /// </remarks>
-        /// <seealso cref="DebugActions.AddCallbacks(IDebugActions)" />
-        /// <seealso cref="DebugActions.RemoveCallbacks(IDebugActions)" />
-        /// <seealso cref="DebugActions.UnregisterCallbacks(IDebugActions)" />
-        public void SetCallbacks(IDebugActions instance)
+        /// <seealso cref="DevToolsActions.AddCallbacks(IDevToolsActions)" />
+        /// <seealso cref="DevToolsActions.RemoveCallbacks(IDevToolsActions)" />
+        /// <seealso cref="DevToolsActions.UnregisterCallbacks(IDevToolsActions)" />
+        public void SetCallbacks(IDevToolsActions instance)
         {
-            foreach (var item in m_Wrapper.m_DebugActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_DevToolsActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_DebugActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_DevToolsActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
     /// <summary>
-    /// Provides a new <see cref="DebugActions" /> instance referencing this action map.
+    /// Provides a new <see cref="DevToolsActions" /> instance referencing this action map.
     /// </summary>
-    public DebugActions @Debug => new DebugActions(this);
+    public DevToolsActions @DevTools => new DevToolsActions(this);
+
+    // Console
+    private readonly InputActionMap m_Console;
+    private List<IConsoleActions> m_ConsoleActionsCallbackInterfaces = new List<IConsoleActions>();
+    private readonly InputAction m_Console_CloseConsole;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Console".
+    /// </summary>
+    public struct ConsoleActions
+    {
+        private @GameControls m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public ConsoleActions(@GameControls wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Console/CloseConsole".
+        /// </summary>
+        public InputAction @CloseConsole => m_Wrapper.m_Console_CloseConsole;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Console; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="ConsoleActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(ConsoleActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="ConsoleActions" />
+        public void AddCallbacks(IConsoleActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ConsoleActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ConsoleActionsCallbackInterfaces.Add(instance);
+            @CloseConsole.started += instance.OnCloseConsole;
+            @CloseConsole.performed += instance.OnCloseConsole;
+            @CloseConsole.canceled += instance.OnCloseConsole;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="ConsoleActions" />
+        private void UnregisterCallbacks(IConsoleActions instance)
+        {
+            @CloseConsole.started -= instance.OnCloseConsole;
+            @CloseConsole.performed -= instance.OnCloseConsole;
+            @CloseConsole.canceled -= instance.OnCloseConsole;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="ConsoleActions.UnregisterCallbacks(IConsoleActions)" />.
+        /// </summary>
+        /// <seealso cref="ConsoleActions.UnregisterCallbacks(IConsoleActions)" />
+        public void RemoveCallbacks(IConsoleActions instance)
+        {
+            if (m_Wrapper.m_ConsoleActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="ConsoleActions.AddCallbacks(IConsoleActions)" />
+        /// <seealso cref="ConsoleActions.RemoveCallbacks(IConsoleActions)" />
+        /// <seealso cref="ConsoleActions.UnregisterCallbacks(IConsoleActions)" />
+        public void SetCallbacks(IConsoleActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ConsoleActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ConsoleActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="ConsoleActions" /> instance referencing this action map.
+    /// </summary>
+    public ConsoleActions @Console => new ConsoleActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "GameControl" which allows adding and removing callbacks.
     /// </summary>
@@ -1320,6 +1548,20 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSkills10(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "PointerPosition" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPointerPosition(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Modifier" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnModifier(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "CameraControl" which allows adding and removing callbacks.
@@ -1363,20 +1605,13 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRotateMouseDelta(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "PointerPosition" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnPointerPosition(InputAction.CallbackContext context);
     }
     /// <summary>
-    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Debug" which allows adding and removing callbacks.
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "DevTools" which allows adding and removing callbacks.
     /// </summary>
-    /// <seealso cref="DebugActions.AddCallbacks(IDebugActions)" />
-    /// <seealso cref="DebugActions.RemoveCallbacks(IDebugActions)" />
-    public interface IDebugActions
+    /// <seealso cref="DevToolsActions.AddCallbacks(IDevToolsActions)" />
+    /// <seealso cref="DevToolsActions.RemoveCallbacks(IDevToolsActions)" />
+    public interface IDevToolsActions
     {
         /// <summary>
         /// Method invoked when associated input action "ToggleConsole" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
@@ -1386,11 +1621,47 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnToggleConsole(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "SpawnUnit" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "SpawnUser" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnSpawnUnit(InputAction.CallbackContext context);
+        void OnSpawnUser(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SpawnAllied" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSpawnAllied(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SpawnNeutral" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSpawnNeutral(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SpawnEnemy" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSpawnEnemy(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Console" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="ConsoleActions.AddCallbacks(IConsoleActions)" />
+    /// <seealso cref="ConsoleActions.RemoveCallbacks(IConsoleActions)" />
+    public interface IConsoleActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "CloseConsole" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCloseConsole(InputAction.CallbackContext context);
     }
 }

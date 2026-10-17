@@ -7,7 +7,7 @@ namespace _Project.Scripts.Units.Components
     [RequireComponent(typeof(Unit))]
     public class UnitCombat : MonoBehaviour
     {
-        private const string DefaultWeaponProviderName = "DefaultWeaponProvider"; 
+         
         
         private Unit unit;
         private UnitStateMachine stateMachine;
@@ -70,31 +70,26 @@ namespace _Project.Scripts.Units.Components
 
         private void ResolveWeaponProvider()
         {
-            weaponProvider = GetComponent<IWeaponProvider>() ?? FindSceneWeaponProvider();
+            weaponProvider = GetComponent<IWeaponProvider>();
 
             if (weaponProvider == null)
             {
                 Debug.LogWarning($"{nameof(UnitCombat)} on {unit.name}: no {nameof(IWeaponProvider)} found, " +
                                  "creating an in-editor default one.");
-                var go = new GameObject(DefaultWeaponProviderName);
-                go.hideFlags = HideFlags.HideInHierarchy;
-                weaponProvider = go.AddComponent<DefaultWeaponProvider>();
+                
+                
+                var provider = gameObject.AddComponent<DefaultWeaponProvider>();
+                provider.SetDefaultAttackType(AttackType.Melee);
+                weaponProvider = provider;
             }
         }
 
-        private IWeaponProvider FindSceneWeaponProvider()
-        {
-            var provider = FindAnyObjectByType<DefaultWeaponProvider>();
-            if (provider != null && provider.gameObject.scene.IsValid())
-            {
-                return provider;
-            }
-
-            return null;
-        }
+        
 
         private UnitState CreateAttackState()
         {
+            
+            
             AttackType attackType = weaponProvider.CurrentAttackType;
 
             switch (attackType)
@@ -104,7 +99,7 @@ namespace _Project.Scripts.Units.Components
                 case AttackType.Spell: return new UnitSpellAttackState(unit, this, weaponProvider.SpellProfile);
                 default:
                 {
-                    Debug.LogWarning($"{nameof(UnitCombat)} on {unit.name}: unexpected attack type {attackType}");
+                    Debug.LogError($"{nameof(UnitCombat)} on {unit.name}: unsupported attack type {attackType}");
                     return null;
                 }
             }

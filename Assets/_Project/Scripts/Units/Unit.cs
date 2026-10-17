@@ -32,7 +32,7 @@ namespace _Project.Scripts.Units {
         
         private bool isSelected;
         private bool isInCombat;
-        private AttackType currentAttackType;
+        private AttackType? currentAttackType;
         private Vector3? lastImpactDirection;
         
         public UnitStats Stats => stats;
@@ -135,15 +135,15 @@ namespace _Project.Scripts.Units {
             movement.SetMovementMode(mode);
         }
         
-        public void SetCombatMode(AttackType attackType)
-        {
-            if (currentAttackType == attackType)
-            {
-                return;
-            }
+        public void SetCombatMode(AttackType? attackType)
+                {
+                    if (currentAttackType == attackType)
+                    {
+                        return;
+                    }
 
-            currentAttackType = attackType;
-            isInCombat = attackType != AttackType.None;
+                    currentAttackType = attackType;
+                    isInCombat = attackType.HasValue;
             
             animatorController.SetCombatState(isInCombat, attackType);
             

@@ -400,7 +400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe76e391592e43f0a1228e1c3e85f48c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Combat.DefaultWeaponProvider
-  defaultAttackType: 0
+  defaultAttackType: 1
   meleeProfile:
     minRange: 0
     maxRange: 2

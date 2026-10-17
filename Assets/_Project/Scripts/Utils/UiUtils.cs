@@ -7,8 +7,6 @@ namespace _Project.Scripts.Utils {
             return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
         }
         
-        public static bool IsShiftPressed() {
-            return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-        }
+        
     }
 }
