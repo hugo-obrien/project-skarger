@@ -861,8 +861,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36db2737677046a3b233d519d4a2da7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Systems.GameTimeManager
-  pauseKey: 32
-  speedKey: 9
   timeScales:
   - 1
   - 1.5
@@ -1264,7 +1262,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4125697375461346158, guid: 0671ad76bbce80442a00145d47c8f823, type: 3}
       propertyPath: stats.maxHealth
-      value: 1000
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 5283565279700496356, guid: 0671ad76bbce80442a00145d47c8f823, type: 3}
       propertyPath: defaultAttackType
@@ -1272,7 +1270,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6562767893101750493, guid: 0671ad76bbce80442a00145d47c8f823, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.43
+      value: 7.59
       objectReference: {fileID: 0}
     - target: {fileID: 6562767893101750493, guid: 0671ad76bbce80442a00145d47c8f823, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1280,7 +1278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6562767893101750493, guid: 0671ad76bbce80442a00145d47c8f823, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.84
+      value: -6.67
       objectReference: {fileID: 0}
     - target: {fileID: 6562767893101750493, guid: 0671ad76bbce80442a00145d47c8f823, type: 3}
       propertyPath: m_LocalRotation.w

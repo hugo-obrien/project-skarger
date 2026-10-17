@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using _Project.Scripts.UI;
+using _Project.Scripts.UI.Console;
 using _Project.Scripts.Units;
 using _Project.Scripts.Units.Components;
 using _Project.Scripts.Units.Factions;
@@ -51,6 +52,8 @@ namespace _Project.Scripts.Controllers
         private readonly List<MoveMarkerVisual> activeMoveMarkers = new List<MoveMarkerVisual>();
 
         private Unit currentInteractionTarget;
+        private GameControls controls;
+        private DebugConsole console;
 
         private void Awake()
         {
@@ -70,6 +73,23 @@ namespace _Project.Scripts.Controllers
             }
         }
 
+        private void OnEnable()
+        {
+            controls ??= new GameControls();
+            controls.Enable();
+            console ??= FindAnyObjectByType<DebugConsole>();
+        }
+
+        private void OnDisable()
+        {
+            controls?.Disable();
+        }
+
+        private void OnDestroy()
+        {
+            controls?.Dispose();
+        }
+
         private void Update()
         {
             if (camera == null)
@@ -82,7 +102,13 @@ namespace _Project.Scripts.Controllers
                 }
             }
 
-            if (Input.GetMouseButtonDown(1) && !UiUtils.IsPointerOverUI() && selectionGroup.HasPlayerControlledUnits())
+            if (console != null && console.IsOpen)
+            {
+                HideMoveMarkerIfReached();
+                return;
+            }
+
+            if (controls.GameControl.Command.WasPressedThisFrame() && !UiUtils.IsPointerOverUI() && selectionGroup.HasPlayerControlledUnits())
             {
                 HandleRightClick();
             }
@@ -92,7 +118,7 @@ namespace _Project.Scripts.Controllers
 
         private void HandleRightClick()
         {
-            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = camera.ScreenPointToRay(controls.GameControl.PointerPosition.ReadValue<Vector2>());
 
             RaycastHit[] hits = Physics.RaycastAll(ray, maxRaycastDistance, combinedClickedMask,
                 QueryTriggerInteraction.Ignore);

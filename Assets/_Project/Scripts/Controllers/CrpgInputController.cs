@@ -1,4 +1,5 @@
 using _Project.Scripts.UI;
+using _Project.Scripts.UI.Console;
 using _Project.Scripts.Units;
 using _Project.Scripts.Utils;
 using UnityEngine;
@@ -24,6 +25,8 @@ namespace _Project.Scripts.Controllers
         private SelectionGroup selectionGroup;
         private SelectionHandler selectionHandler;
         private RightClickHandler rightClickHandler;
+        private GameControls controls;
+        private DebugConsole console;
         
         private void Awake()
         {
@@ -44,6 +47,23 @@ namespace _Project.Scripts.Controllers
             };
         }
 
+        private void OnEnable()
+        {
+            controls ??= new GameControls();
+            controls.Enable();
+            console ??= FindAnyObjectByType<DebugConsole>();
+        }
+
+        private void OnDisable()
+        {
+            controls?.Disable();
+        }
+
+        private void OnDestroy()
+        {
+            controls?.Dispose();
+        }
+
         private void Reset()
         {
             mainCamera = Camera.main;
@@ -58,25 +78,30 @@ namespace _Project.Scripts.Controllers
                 selectionHandler.MainCamera = mainCamera;
             }
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (console != null && console.IsOpen)
+            {
+                return;
+            }
+
+            if (controls.GameControl.CancelCommand.WasPressedThisFrame())
             {
                 selectionHandler.ClearSelection();
                 return;
             }
 
-            if (Input.GetMouseButtonDown(0) && !UiUtils.IsPointerOverUI())
+            if (controls.GameControl.Select.WasPressedThisFrame() && !UiUtils.IsPointerOverUI())
             {
-                selectionHandler.OnLeftMouseDown(Input.mousePosition);
+                selectionHandler.OnLeftMouseDown(controls.GameControl.PointerPosition.ReadValue<Vector2>());
             }
 
-            if (Input.GetMouseButton(0))
+            if (controls.GameControl.Select.IsPressed())
             {
-                selectionHandler.OnLeftMouseHeld(Input.mousePosition);
+                selectionHandler.OnLeftMouseHeld(controls.GameControl.PointerPosition.ReadValue<Vector2>());
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (controls.GameControl.Select.WasReleasedThisFrame())
             {
-                selectionHandler.OnLeftMouseUp(Input.mousePosition, UiUtils.IsShiftPressed());
+                selectionHandler.OnLeftMouseUp(controls.GameControl.PointerPosition.ReadValue<Vector2>(), controls.GameControl.Modifier.IsPressed());
             }
         }
     }

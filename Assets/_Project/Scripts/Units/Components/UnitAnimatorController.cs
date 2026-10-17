@@ -75,7 +75,7 @@ namespace _Project.Scripts.Units.Components
             Trigger(attackTrigger);
         }
 
-        public void SetCombatState(bool isInCombat, AttackType attackType)
+        public void SetCombatState(bool isInCombat, AttackType? attackType)
         {
             if (animator == null) return;
 
@@ -86,7 +86,7 @@ namespace _Project.Scripts.Units.Components
 
             if (TryResolve(attackTypeParam, AnimatorControllerParameterType.Float, out int typeHash))
             {
-                animator.SetFloat(typeHash, (float) attackType);
+                animator.SetFloat(typeHash, attackType.HasValue ? (float) attackType.Value : 0f);
             }
         }
 

@@ -15,7 +15,7 @@ namespace _Project.Scripts.Combat
     {
         [Header("Wielding (stub until the equipment system exists)")]
         [Tooltip("Which attack the unit performs by default. Later this will be derived from the equipped weapon")]
-        [SerializeField] private AttackType defaultAttackType;
+        [SerializeField] private AttackType defaultAttackType = AttackType.Melee;
 
         [Header("Melee weapon profile")] [SerializeField]
         private WeaponProfile meleeProfile = new WeaponProfile

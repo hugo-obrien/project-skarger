@@ -30,7 +30,7 @@ namespace _Project.Scripts.Controllers
         [SerializeField] private float maxZoomOffset = 13f;
         [SerializeField] private LayerMask groundLayer;
 
-        private CameraControls controls;
+        private GameControls controls;
 
         private float pendingZoomInput;
         private Vector2 pendingMouseDelta;
@@ -201,7 +201,7 @@ namespace _Project.Scripts.Controllers
 
         private Vector2 GetEdgeScrollInput()
         {
-            Vector2 pointerPosition = Input.mousePosition;
+            Vector2 pointerPosition = controls.GameControl.PointerPosition.ReadValue<Vector2>();
             if (UiUtils.IsPointerOverUI())
             {
                 return Vector2.zero;
@@ -245,7 +245,7 @@ namespace _Project.Scripts.Controllers
                 return;
             }
 
-            controls = new CameraControls();
+            controls = new GameControls();
 
             controls.CameraControl.Zoom.performed += OnZoomPerformed;
             controls.CameraControl.RotateMouseDelta.performed += OnRotateMouseDeltaPerformed;

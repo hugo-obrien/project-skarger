@@ -9,7 +9,7 @@ namespace _Project.Scripts.Units.State
 
         public override void Enter()
         {
-            unit.SetCombatMode(AttackType.None);
+            unit.SetCombatMode(null);
         }
 
         public override void Tick(float deltaTime)

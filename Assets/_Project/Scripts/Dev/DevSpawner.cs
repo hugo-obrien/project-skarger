@@ -16,11 +16,29 @@ namespace _Project.Scripts.Dev {
         [SerializeField] private Camera mainCamera;
         [SerializeField] private LayerMask groundLayer;
 
-        private void Reset() {
+        private GameControls controls;
+
+                private void OnEnable() {
+                    controls ??= new GameControls();
+                    controls.Enable();
+                }
+
+                private void OnDisable() {
+                    controls?.Disable();
+                }
+
+                private void OnDestroy() {
+                    controls?.Dispose();
+                }
+
+                private void Reset() {
             mainCamera = Camera.main;
         }
 
         private void Awake() {
+            
+
+
             if (unitPrefab == null) {
                 LogUtil.Error("DevSpawner", "Awake", "Unit prefab is null");
             }
@@ -38,22 +56,22 @@ namespace _Project.Scripts.Dev {
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.F1)) {
+            if (controls.DevTools.SpawnUser.WasPressedThisFrame()) {
                 SpawnAtMouse(UnitFaction.User);
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.F2)) {
+            if (controls.DevTools.SpawnAllied.WasPressedThisFrame()) {
                 SpawnAtMouse(UnitFaction.Allied);
                 return;
             }
             
-            if (Input.GetKeyDown(KeyCode.F3)) {
+            if (controls.DevTools.SpawnNeutral.WasPressedThisFrame()) {
                 SpawnAtMouse(UnitFaction.Neutral);
                 return;
             }
             
-            if (Input.GetKeyDown(KeyCode.F4)) {
+            if (controls.DevTools.SpawnEnemy.WasPressedThisFrame()) {
                 SpawnAtMouse(UnitFaction.Enemy);
             }
         }
@@ -77,7 +95,7 @@ namespace _Project.Scripts.Dev {
                 return;
             }
 
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = mainCamera.ScreenPointToRay(controls.GameControl.PointerPosition.ReadValue<Vector2>());
             if (Physics.Raycast(ray, out RaycastHit hit, 1000f, groundLayer, QueryTriggerInteraction.Ignore))
             {
                 Vector3 spawnPosition = hit.point + Vector3.up * spawnHeightOffset;

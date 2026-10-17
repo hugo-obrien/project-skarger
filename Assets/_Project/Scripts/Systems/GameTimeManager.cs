@@ -8,10 +8,10 @@ namespace _Project.Scripts.Systems
         public static GameTimeManager Instance { get; private set; }
 
         [Header("Pause")] 
-        [SerializeField] private KeyCode pauseKey = KeyCode.Space;
+        private GameControls controls;
         
         [Header("Speed")]
-        [SerializeField] private KeyCode speedKey = KeyCode.Tab;
+
         [SerializeField] private float[] timeScales = { 1f, 1.5f, 2f };
 
         private int currentSpeedIndex;
@@ -30,21 +30,34 @@ namespace _Project.Scripts.Systems
             Instance = this;
         }
 
+        private void OnEnable()
+        {
+            controls ??= new GameControls();
+            controls.Enable();
+        }
+
+        private void OnDisable()
+        {
+            controls?.Disable();
+        }
+
         private void Update()
         {
-            if (Input.GetKeyDown(pauseKey))
+            if (controls.GameControl.Pause.WasPressedThisFrame())
             {
                 TogglePause();
             }
 
-            if (Input.GetKeyDown(speedKey))
+            if (controls.GameControl.SpeedUp.WasPressedThisFrame())
             {
                 CycleSpeed();
             }
         }
 
-        private void OnDestroy()
+                private void OnDestroy()
         {
+            controls?.Dispose();
+
             if (Instance == this)
             {
                 Time.timeScale = 1f;

@@ -10,7 +10,7 @@ namespace _Project.Scripts.Units.State
         public override void Enter()
         {
             unit.Stop();
-            unit.SetCombatMode(AttackType.None);
+            unit.SetCombatMode(null);
         }
     }
 }

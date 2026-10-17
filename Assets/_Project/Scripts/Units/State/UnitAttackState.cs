@@ -54,7 +54,7 @@ namespace _Project.Scripts.Units.State
         
         public override void Exit()
         {
-            unit.SetCombatMode(AttackType.None);
+            unit.SetCombatMode(null);
         }
     }
 }

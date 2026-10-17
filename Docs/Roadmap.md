@@ -1,16 +1,35 @@
 # Roadmap v.0.1
 # План на ближайшее время
 ## Спринт 0: Полный переход на новую систему инпута (Unity Input System)
-**Проблема:** `CameraController.cs` использует новый Input System (CameraControls), но все еще 
-`Input.mousePosition`. `CrpgInputController.cs`, `RightClickHandler.cs`, 
-`UiUtils.cs`, `DevSpawner.cs`, `GameTimeManager.cs`, `DebugConsole.cs` - все на 
-старом Input 
+### 0.0 Переход на новую систему инпута ✅
+**Статус:** выполнено. Все контроллеры переведены на `GameControls` (Unity Input System), `Active Input Handling` переключён на `Input System Package (New)`, `UiUtils.IsShiftPressed()` удалён. 
 
 **Что нужно сделать:**
 - Создать единый InputActions файл для всех игровых действий 
 - Мигрировать все контроллеры на новый Input System 
 - Настроить поддержку Mouse & Keyboard + Gamepad 
 - Убрать предупреждение Unity
+
+### 0.1 Исправление найденных багов
+- Если юнит находится в бою он
+  - почти не реагирует на команды, AI перебивает выполнение пользовательских команд
+  - при выполнении команды, например идти по правой кнопке, сбрасывается КД атаки
+
+### 0.2 Вынести GameControls в один компонент
+Каждый контроллер создаёт свой экземпляр GameControls. Работает, но лучше вынести общий экземпляр в один компонент.
+
+### 0.3 Перевести управление вводом консоли на переключение ActionMaps
+Вместо ручных проверок if (console.open)
+
+### 0.4 Изучить потенциальные плюсы и минусы переезда с Polling на Events
+// Вместо проверки в Update:
+// if (controls.GameControl.Select.WasPressedThisFrame()) { ... }
+
+// В OnEnable:
+controls.GameControl.Select.performed += ctx => OnSelectPerformed(ctx.ReadValue<Vector2>());
+
+// В OnDisable:
+controls.GameControl.Select.performed -= ctx => OnSelectPerformed(ctx.ReadValue<Vector2>());
 
 ## Спринт 1: Foundation Systems (Фундаментальные системы)
 ### 1.0 Система загрузки конфигураций
