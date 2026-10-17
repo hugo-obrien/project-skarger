@@ -15,6 +15,22 @@
   - почти не реагирует на команды, AI перебивает выполнение пользовательских команд
   - при выполнении команды, например идти по правой кнопке, сбрасывается КД атаки
 
+### 0.2 Вынести GameControls в один компонент
+Каждый контроллер создаёт свой экземпляр GameControls. Работает, но лучше вынести общий экземпляр в один компонент.
+
+### 0.3 Перевести управление вводом консоли на переключение ActionMaps
+Вместо ручных проверок if (console.open)
+
+### 0.4 Изучить потенциальные плюсы и минусы переезда с Polling на Events
+// Вместо проверки в Update:
+// if (controls.GameControl.Select.WasPressedThisFrame()) { ... }
+
+// В OnEnable:
+controls.GameControl.Select.performed += ctx => OnSelectPerformed(ctx.ReadValue<Vector2>());
+
+// В OnDisable:
+controls.GameControl.Select.performed -= ctx => OnSelectPerformed(ctx.ReadValue<Vector2>());
+
 ## Спринт 1: Foundation Systems (Фундаментальные системы)
 ### 1.0 Система загрузки конфигураций
 **Цель:** Система, позволяющая создавать, редактировать и хранить данные о сущностях игры в формате, удобном для работы (CSV, JSON)
