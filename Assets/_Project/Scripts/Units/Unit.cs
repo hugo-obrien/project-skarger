@@ -2,6 +2,7 @@ using System;
 using _Project.Scripts.Combat;
 using _Project.Scripts.Movement;
 using _Project.Scripts.UI;
+using _Project.Scripts.Units.Commands;
 using _Project.Scripts.Units.Components;
 using _Project.Scripts.Units.Factions;
 using _Project.Scripts.Units.Stats;
@@ -20,12 +21,17 @@ namespace _Project.Scripts.Units {
     [RequireComponent(typeof(UnitAnimatorController))]
     [RequireComponent(typeof(UnitSelectionVisualController))]
     [RequireComponent(typeof(UnitDeathHandler))]
+    [RequireComponent(typeof(UnitCommandController))]
+    [RequireComponent(typeof(UnitCombat))]
+    [RequireComponent(typeof(UnitSpeechBubblePresenter))]
     public class Unit : MonoBehaviour, IDamageDealer {
         
         [Header("Faction")] [SerializeField] private UnitFaction faction = UnitFaction.User;
         [Header("Stats")] [SerializeField] private UnitStats stats;
 
         private UnitMovement movement;
+        private UnitCombat combat;
+        private UnitCommandController commands;
         private UnitHealth health;
         private UnitAnimatorController animatorController;
         private UnitSpeechBubblePresenter speechBubblePresenter;
@@ -36,6 +42,8 @@ namespace _Project.Scripts.Units {
         private Vector3? lastImpactDirection;
         
         public UnitStats Stats => stats;
+        public UnitCombat Combat => combat;
+        public UnitCommandController Commands => commands;
         public UnitFaction Faction => faction;
         
         public bool IsPlayerControlled => faction == UnitFaction.User;
@@ -63,6 +71,8 @@ namespace _Project.Scripts.Units {
             health = GetComponent<UnitHealth>();
             animatorController = GetComponent<UnitAnimatorController>();
             speechBubblePresenter = GetComponent<UnitSpeechBubblePresenter>();
+            combat = GetComponent<UnitCombat>();
+            commands = GetComponent<UnitCommandController>();
 
             if (movement == null)
             {

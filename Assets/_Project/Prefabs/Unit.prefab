@@ -195,6 +195,8 @@ GameObject:
   - component: {fileID: 1356763714584241544}
   - component: {fileID: 5283565279700496356}
   - component: {fileID: 1882361898127739755}
+  - component: {fileID: 1337551959730775683}
+  - component: {fileID: 6015466663810270739}
   m_Layer: 8
   m_Name: Unit
   m_TagString: Untagged
@@ -286,6 +288,7 @@ MonoBehaviour:
     stoppingDistance: 1.5
     turnSpeed: 14
     destinationSnapDistance: 1
+    interactionDistance: 2
     maxHealth: 100
     deathAnimationDuration: 1.5
     combat:
@@ -447,6 +450,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Units.Components.UnitDeathHandler
   rootCollider: {fileID: 0}
+--- !u!114 &1337551959730775683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7183093526189999512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb3feacec637fa94ebd33dadb555bd68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Units.Commands.UnitCommandController
+--- !u!114 &6015466663810270739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7183093526189999512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d59f71982d8b43b498f3f33a200ddea5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Units.Components.UnitSpeechBubblePresenter
+  speechBubblePrefab: {fileID: 934622326811685007, guid: b37c182c0c8de0441b14c71995dddbfc, type: 3}
+  speechBubbleAnchor: {fileID: 4459878377627995049}
 --- !u!1001 &411184435666891832
 PrefabInstance:
   m_ObjectHideFlags: 0
