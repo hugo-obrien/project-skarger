@@ -29,14 +29,12 @@ namespace _Project.Scripts.UI
                 }
             }
             
-            Debug.Log("SpeechBubble.LateUpdate: rotate to camera");
             transform.LookAt(transform.position + mainCamera.transform.rotation * Vector3.forward,
                 mainCamera.transform.rotation * Vector3.up);
         }
 
         public void Show(string message, float duration = -1f)
         {
-            Debug.Log($"SpeechBubble.Show: {message}");
             if (textLabel == null)
             {
                 LogUtil.Warn("SpeechBubble", "Show", "TextLabel not set");

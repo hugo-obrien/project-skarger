@@ -20,6 +20,9 @@ namespace _Project.Scripts.Units.Stats {
         [Min(0.05f)]
         public float destinationSnapDistance = 1.0f;
 
+        [Header("Interaction")]
+        [Min(0.1f)] public float interactionDistance = 2.0f;
+
         [Header("Health")] 
         [Min(1f)] public float maxHealth = 100f;
 
