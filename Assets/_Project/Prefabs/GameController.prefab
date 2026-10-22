@@ -104,9 +104,8 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 256
   maxRaycastDistance: 1000
-  unitSpacing: 1.25
-  occupancyRadiusFactor: 0.45
   moveMarkerPrefab: {fileID: 0}
-  moveMarkerColor: {r: 0, g: 0.3921569, b: 0, a: 1}
-  moveMarkerOffset: 0.03
-  moveMarkerFadeDuration: 0.25
+  contextActions:
+  - {fileID: 11400000, guid: 3c3a0b7ff2f55c86a68f8dc9e6ee19c0, type: 2}
+  - {fileID: 11400000, guid: 5cd0b8489d1f11bd5f7f17a9f9ba8d9c, type: 2}
+  - {fileID: 11400000, guid: 60b843722a608569682773f2f77a1dbc, type: 2}

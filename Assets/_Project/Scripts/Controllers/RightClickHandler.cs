@@ -1,26 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using _Project.Scripts.Controllers.ContextActions;
 using _Project.Scripts.UI;
 using _Project.Scripts.UI.Console;
 using _Project.Scripts.Units;
-using _Project.Scripts.Units.Commands;
-using _Project.Scripts.Units.Factions;
 using _Project.Scripts.Utils;
 using UnityEngine;
 
 namespace _Project.Scripts.Controllers {
-    public enum InteractiveLayerType {
-        Ground,
-        Unit
-    }
-
-    [Serializable]
-    public sealed class InteractiveLayerEntry {
-        public InteractiveLayerType type;
-        public LayerMask layerMask;
-    }
-
+    /// <summary>
+    /// Detects a right click, resolves what was clicked into a context and delegates the
+    /// behavior to the first <see cref="IContextAction"/> strategy able to handle it.
+    /// Adding new right-click behavior does not require touching this class.
+    /// </summary>
     [RequireComponent(typeof(SelectionGroup))]
     public class RightClickHandler : MonoBehaviour {
         [Header("Camera")]
@@ -28,296 +18,93 @@ namespace _Project.Scripts.Controllers {
         [SerializeField] private InteractiveLayerEntry[] interactiveLayers;
         [SerializeField] [Min(1f)] private float maxRaycastDistance = 1000f;
 
-        [Header("Group movement")]
-        [SerializeField] [Min(0.1f)] [Tooltip("Distance between units in group")]
-        private float unitSpacing = 1.25f;
-        [SerializeField] [Range(0.1f, 0.9f)] [Tooltip("Occupance check radius")]
-        private float occupancyRadiusFactor = 0.45f;
-
         [Header("Markers")]
         [SerializeField] private MoveMarkerVisual moveMarkerPrefab;
-        [SerializeField] private Color moveMarkerColor = Color.darkGreen;
-        [SerializeField] [Min(0f)] private float moveMarkerOffset = 0.03f;
-        [SerializeField] private float moveMarkerFadeDuration = 0.25f;
 
-        private SelectionGroup selectionGroup;
-        private int combinedClickedMask;
-        private LayerMask unitLayer;
-        private readonly List<MoveMarkerVisual> activeMoveMarkers = new List<MoveMarkerVisual>();
+        [Header("Context actions")]
+        [SerializeField] private ContextAction[] contextActions;
 
-
-        private GameControls controls;
-        private DebugConsole console;
+        private SelectionGroup _selectionGroup;
+        private GameControls _controls;
+        private DebugConsole _console;
+        private LayerMask _combinedClickedMask;
+        private LayerMask _unitLayer;
+        private MoveMarkerPresenter _moveMarkerPresenter;
+        private RightClickContextBuilder _contextBuilder;
+        private ContextActionResolver _actionResolver;
 
         private void Awake() {
-            if (!TryGetComponent(out selectionGroup)) {
-                LogUtil.Error("RightClickHandler", "Awake", "Selection group not found");
+            if (!TryGetComponent(out _selectionGroup)) {
+                LogUtil.Error(nameof(RightClickHandler), nameof(Awake), "Selection group not found");
             }
 
-            interactiveLayers.ToDictionary(entry => entry.layerMask.value, entry => entry);
-            foreach (var mask in interactiveLayers) {
-                combinedClickedMask |= mask.layerMask;
-                if (mask.type == InteractiveLayerType.Unit) {
-                    unitLayer = mask.layerMask;
-                }
-            }
+            CacheInteractiveLayers();
+
+            _moveMarkerPresenter = new MoveMarkerPresenter(moveMarkerPrefab);
+            _contextBuilder = new RightClickContextBuilder(interactiveLayers);
+            _actionResolver = new ContextActionResolver(contextActions);
         }
 
         private void OnEnable() {
-            controls ??= new GameControls();
-            controls.Enable();
-            console ??= FindAnyObjectByType<DebugConsole>();
+            _controls ??= new GameControls();
+            _controls.Enable();
+            _console ??= FindAnyObjectByType<DebugConsole>();
         }
 
         private void OnDisable() {
-            controls?.Disable();
+            _controls?.Disable();
         }
 
         private void OnDestroy() {
-            controls?.Dispose();
+            _controls?.Dispose();
+            _moveMarkerPresenter?.ClearAll();
         }
 
         private void Update() {
             if (camera == null) {
                 camera = Camera.main;
                 if (camera == null) {
-                    LogUtil.Error("RightClickHandler", "Update", "Camera not found");
+                    LogUtil.Error(nameof(RightClickHandler), nameof(Update), "Camera not found");
                     return;
                 }
             }
 
-            if (console != null && console.IsOpen) {
-                HideMoveMarkerIfReached();
-                return;
-            }
+            _moveMarkerPresenter.Tick();
 
-            if (controls.GameControl.Command.WasPressedThisFrame() && !UiUtils.IsPointerOverUI() &&
-                selectionGroup.HasPlayerControlledUnits()) {
+            if (_console != null && _console.IsOpen) return;
+
+            if (_controls.GameControl.Command.WasPressedThisFrame() && !UiUtils.IsPointerOverUI() &&
+                _selectionGroup.HasPlayerControlledUnits()) {
                 HandleRightClick();
             }
-
-            HideMoveMarkerIfReached();
         }
 
         private void HandleRightClick() {
-            Ray ray = camera.ScreenPointToRay(controls.GameControl.PointerPosition.ReadValue<Vector2>());
+            Ray ray = camera.ScreenPointToRay(_controls.GameControl.PointerPosition.ReadValue<Vector2>());
 
-            RaycastHit[] hits = Physics.RaycastAll(ray, maxRaycastDistance, combinedClickedMask,
+            RaycastHit[] hits = Physics.RaycastAll(ray, maxRaycastDistance, _combinedClickedMask,
                 QueryTriggerInteraction.Ignore);
 
             if (hits.Length == 0) return;
 
-            Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+            System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
-            foreach (var hit in hits) {
-                if (hit.collider == null) {
-                    LogUtil.Warn("RightClickHandler", "HandleRightClick", "hit collider is null");
-                    continue;
-                }
+            RightClickContext context = _contextBuilder.TryBuild(hits);
+            if (context == null) return;
 
-                int layerIndex = hit.collider.gameObject.layer;
-                int layerBit = 1 << layerIndex;
-                foreach (var entry in interactiveLayers) {
-                    if ((entry.layerMask.value & layerBit) != 0) {
-                        HandleRightClickByLayer(entry.type, hit);
-                        return;
-                    }
-                }
-            }
+            var services = new RightClickContextServices(_selectionGroup, _unitLayer, _moveMarkerPresenter,
+                _controls.GameControl.Modifier.IsPressed());
+
+            _actionResolver.ResolveAndExecute(context, services);
         }
 
-        private void HandleRightClickByLayer(InteractiveLayerType layer, RaycastHit hit) {
-            switch (layer) {
-                case InteractiveLayerType.Ground: {
-                    HandleMove(hit);
-                    break;
-                }
-                case InteractiveLayerType.Unit: {
-                    HandleUnitRightClick(hit);
-                    break;
-                }
-                default: {
-                    LogUtil.Info("RightClickHandler", "HandleRightClickByLayer",
-                        $"Behavior for {layer} not implemented yet");
-                    break;
+        private void CacheInteractiveLayers() {
+            foreach (var entry in interactiveLayers) {
+                _combinedClickedMask |= entry.layerMask;
+                if (entry.type == InteractiveLayerType.Unit) {
+                    _unitLayer = entry.layerMask;
                 }
             }
-        }
-
-        private void HandleUnitRightClick(RaycastHit hit) {
-            Unit unit = hit.collider.GetComponentInParent<Unit>();
-            if (unit == null) {
-                LogUtil.Warn("RightClickHandler", "HandleUnitRightClick",
-                    "Hit collider is on unit layer but has no Unit component");
-                return;
-            }
-
-            if (unit.IsDead) return;
-
-            HandleUnitRightClick(unit);
-        }
-
-        private void HandleUnitRightClick(Unit unit) {
-            switch (unit.Faction) {
-                case UnitFaction.User: {
-                    HandleMove(unit.transform.position);
-                    return;
-                }
-                case UnitFaction.Allied:
-                case UnitFaction.Neutral: {
-                    HandleAlliedOrNeutralClick(unit);
-                    return;
-                }
-                case UnitFaction.Enemy: {
-                    HandleAttack(unit);
-                    return;
-                }
-                default: {
-                    LogUtil.Warn("RightClickHandler", "HandleUnitRightClick",
-                        $"Unknown unit faction {unit.Faction}");
-                    return;
-                }
-            }
-        }
-
-        private void HandleAttack(Unit target) {
-            IReadOnlyList<Unit> units = selectionGroup.GetPlayerControlledUnits();
-            if (units.Count == 0) return;
-
-            ClearMoveMarkers();
-
-            var appendRequested = controls.GameControl.Modifier.IsPressed();
-            foreach (var unit in units) {
-                if (unit == null) continue;
-                unit.Commands.Issue(new AttackCommand(unit.Combat, target), CommandSource.Player, appendRequested);
-            }
-        }
-
-        private void HandleAlliedOrNeutralClick(Unit targetUnit) {
-            IReadOnlyList<Unit> units = selectionGroup.GetPlayerControlledUnits();
-            if (units.Count == 0) return;
-
-
-            ClearMoveMarkers();
-
-            Vector3 approachPoint = CalculateApproachPoint(units, targetUnit);
-
-            float occupancyRadius = unitSpacing * occupancyRadiusFactor;
-            IReadOnlyList<Vector3> destinations =
-                FormationResolver.BuildDestinations(units, approachPoint, unitSpacing, unitLayer, occupancyRadius);
-
-            bool shiftHeld = controls.GameControl.Modifier.IsPressed();
-
-            for (int i = 0; i < units.Count; i++) {
-                Unit unit = units[i];
-                if (unit == null) continue;
-
-                var sequence = new List<IUnitCommand> { new MoveCommand(unit, unit.Combat, destinations[i]) };
-                if (i == 0) {
-                    sequence.Add(new SpeechBubbleCommand(targetUnit, "Hello, traveller!"));
-                }
-
-                unit.Commands.IssueSequence(sequence, CommandSource.Player, shiftHeld);
-            }
-        }
-
-        private Vector3 CalculateApproachPoint(IReadOnlyList<Unit> units, Unit targetUnit) {
-            Vector3 targetPosition = targetUnit.transform.position;
-
-            Vector3 groupCenter = Vector3.zero;
-            foreach (var unit in units) {
-                groupCenter += unit.transform.position;
-            }
-            groupCenter /= units.Count;
-
-            Vector3 offset = groupCenter - targetPosition;
-            offset.y = 0f;
-            Vector3 direction = offset.sqrMagnitude > 0.001f ? offset.normalized : -targetUnit.transform.forward;
-
-            return targetPosition + direction * targetUnit.Stats.interactionDistance;
-        }
-
-        private void HandleMove(RaycastHit hit) {
-            IReadOnlyList<Unit> units = selectionGroup.GetPlayerControlledUnits();
-            if (units.Count == 0) return;
-
-            IssueMoveCommand(units, hit.point, hit.normal);
-        }
-
-        private void HandleMove(Vector3 point) {
-            IReadOnlyList<Unit> units = selectionGroup.GetPlayerControlledUnits();
-            if (units.Count == 0) return;
-
-            IssueMoveCommand(units, point, null);
-        }
-
-        private void IssueMoveCommand(IReadOnlyList<Unit> units, Vector3 point, Vector3? normal = null) {
-            ClearMoveMarkers();
-
-            float occupancyRadius = unitSpacing * occupancyRadiusFactor;
-            IReadOnlyList<Vector3> destinations =
-                FormationResolver.BuildDestinations(units, point, unitSpacing, unitLayer, occupancyRadius);
-
-            var appendRequested = controls.GameControl.Modifier.IsPressed();
-            for (int i = 0; i < units.Count; i++) {
-                Unit unit = units[i];
-                if (unit == null) continue;
-
-                unit.Commands.Issue(new MoveCommand(unit, unit.Combat, destinations[i]), CommandSource.Player,
-                    appendRequested);
-            }
-
-            if (normal.HasValue) {
-                SpawnMoveMarkers(destinations, normal.Value);
-            }
-        }
-
-        private void SpawnMoveMarkers(IReadOnlyList<Vector3> points, Vector3 normal) {
-            if (moveMarkerPrefab == null) {
-                LogUtil.Info("CrpgInputController", "SpawnMoveMarker", "moveMarkerPrefab is null");
-                return;
-            }
-
-            ClearMoveMarkers();
-
-            Vector3 normalNormalized = normal.normalized;
-            Quaternion markerRotation = Quaternion.FromToRotation(Vector3.up, normalNormalized);
-
-            foreach (var point in points) {
-                Vector3 markerPosition = point + normalNormalized * moveMarkerOffset;
-                var marker = Instantiate(moveMarkerPrefab, markerPosition, markerRotation);
-                marker.Setup(point, markerRotation, moveMarkerColor);
-                activeMoveMarkers.Add(marker);
-            }
-        }
-
-        private void HideMoveMarkerIfReached() {
-            if (activeMoveMarkers.Count == 0) {
-                return;
-            }
-
-            foreach (var unit in selectionGroup.GetPlayerControlledUnits()) {
-                if (unit == null) continue;
-                if (!unit.Commands.IsIdle) return;
-            }
-
-            if (activeMoveMarkers.Count > 0) {
-                foreach (var marker in activeMoveMarkers) {
-                    if (marker != null) {
-                        marker.FadeOutAndDestroy(moveMarkerFadeDuration);
-                    }
-                }
-                activeMoveMarkers.Clear();
-            }
-        }
-
-        private void ClearMoveMarkers() {
-            foreach (var marker in activeMoveMarkers) {
-                if (marker != null) {
-                    Destroy(marker.gameObject);
-                }
-            }
-            activeMoveMarkers.Clear();
         }
     }
 }
