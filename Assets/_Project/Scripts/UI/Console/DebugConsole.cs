@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using _Project.Scripts.Systems;
 using _Project.Scripts.Units;
 using _Project.Scripts.Utils;
 using TMPro;
@@ -19,10 +20,11 @@ namespace _Project.Scripts.UI.Console {
         [SerializeField] private GameObject consolePanel;
 
         private Dictionary<string, IConsoleCommand> commands;
-        private GameControls controls;
         private bool isOpen;
         private bool isInitialized;
         
+        private GameControls Controls => GameControlsProvider.Instance.Controls;
+
         public IReadOnlyCollection<IConsoleCommand> Commands => commands.Values;
         public bool IsOpen => isOpen;
 
@@ -50,30 +52,18 @@ namespace _Project.Scripts.UI.Console {
         }
 
         private void Update() {
-            if (controls.DevTools.ToggleConsole.WasPressedThisFrame()) {
+            if (Controls.DevTools.ToggleConsole.WasPressedThisFrame()) {
                 ToggleConsole();
             }
 
-            if (isOpen && controls.Console.CloseConsole.WasPressedThisFrame())
+            if (isOpen && Controls.Console.CloseConsole.WasPressedThisFrame())
             {
                 ToggleConsole();
             }
         }
         
-                private void OnEnable()
-        {
-            controls ??= new GameControls();
-            controls.Enable();
-        }
-
-        private void OnDisable()
-        {
-            controls?.Disable();
-        }
-
         private void OnDestroy()
         {
-            controls?.Dispose();
             inputField.onEndEdit.RemoveListener(OnInputSubmitted);
         }
         

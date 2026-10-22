@@ -1,3 +1,4 @@
+using _Project.Scripts.Systems;
 using _Project.Scripts.UI.Console;
 using _Project.Scripts.Utils;
 using UnityEngine;
@@ -30,34 +31,34 @@ namespace _Project.Scripts.Controllers
         [SerializeField] private float maxZoomOffset = 13f;
         [SerializeField] private LayerMask groundLayer;
 
-        private GameControls controls;
+        private GameControls Controls => GameControlsProvider.Instance.Controls;
 
         private float pendingZoomInput;
         private Vector2 pendingMouseDelta;
+
+        // Edge scroll must only react to a fresh mouse position: after the Game view regains focus,
+        // Input System may briefly report a stale (0,0) pointer, which would otherwise scroll to bottom-left.
+        private bool wasOverGameView;
+        private bool pointerPositionReady;
+        private Vector2 lastPointerPosition;
 
         private DebugConsole console;
 
         private void Awake()
         {
-            InitializeInput();
-
             console = FindAnyObjectByType<DebugConsole>();
         }
 
         private void OnEnable()
         {
-            InitializeInput();
-            controls.Enable();
+            Controls.CameraControl.Zoom.performed += OnZoomPerformed;
+            Controls.CameraControl.RotateMouseDelta.performed += OnRotateMouseDeltaPerformed;
         }
 
         private void OnDisable()
         {
-            controls?.Disable();
-        }
-
-        private void OnDestroy()
-        {
-            controls?.Dispose();
+            Controls.CameraControl.Zoom.performed -= OnZoomPerformed;
+            Controls.CameraControl.RotateMouseDelta.performed -= OnRotateMouseDeltaPerformed;
         }
 
         private void Update()
@@ -67,11 +68,6 @@ namespace _Project.Scripts.Controllers
                 return;
             }
             
-            if (controls == null)
-            {
-                LogUtil.Warn("CameraController", "Update", "Controls is null");
-            }
-
             float deltaTime = Time.deltaTime;
 
             ApplyRotation(deltaTime);
@@ -147,9 +143,9 @@ namespace _Project.Scripts.Controllers
 
         private void ApplyRotation(float deltaTime)
         {
-            float keyboardRotation = controls.CameraControl.RotateKeyboard.ReadValue<float>();
+            float keyboardRotation = Controls.CameraControl.RotateKeyboard.ReadValue<float>();
 
-            bool mouseRotationActive = controls.CameraControl.RotateMouseButton.IsPressed();
+            bool mouseRotationActive = Controls.CameraControl.RotateMouseButton.IsPressed();
 
             float yawDegrees = keyboardRotation * keyboardRotationSpeed * deltaTime;
 
@@ -168,8 +164,8 @@ namespace _Project.Scripts.Controllers
 
         private void ApplyMovement(float deltaTime)
         {
-            Vector2 moveInput = controls.CameraControl.Move.ReadValue<Vector2>();
-            bool mouseRotationActive = controls.CameraControl.RotateMouseButton.IsPressed();
+            Vector2 moveInput = Controls.CameraControl.Move.ReadValue<Vector2>();
+            bool mouseRotationActive = Controls.CameraControl.RotateMouseButton.IsPressed();
 
             if (!disableEdgeScrollWhileMouseRotating || !mouseRotationActive)
             {
@@ -201,7 +197,43 @@ namespace _Project.Scripts.Controllers
 
         private Vector2 GetEdgeScrollInput()
         {
-            Vector2 pointerPosition = controls.GameControl.PointerPosition.ReadValue<Vector2>();
+            bool overGameView = IsPointerOverGameView();
+            if (!overGameView)
+            {
+                wasOverGameView = false;
+                pointerPositionReady = false;
+                return Vector2.zero;
+            }
+
+            if (!wasOverGameView)
+            {
+                wasOverGameView = true;
+                pointerPositionReady = false;
+
+                // Baseline for the position reported right after (re)gaining focus: it may be stale
+                // (e.g. (0,0)) until the next mouse event. Edge scroll stays disabled until the
+                // pointer actually changes, otherwise the camera would drift even without input.
+                lastPointerPosition = Controls.GameControl.PointerPosition.ReadValue<Vector2>();
+                return Vector2.zero;
+            }
+
+            Vector2 pointerPosition = Controls.GameControl.PointerPosition.ReadValue<Vector2>();
+
+            if (!pointerPositionReady)
+            {
+                if (pointerPosition == lastPointerPosition)
+                {
+                    return Vector2.zero;
+                }
+
+                pointerPositionReady = true;
+                lastPointerPosition = pointerPosition;
+            }
+            else if (pointerPosition != lastPointerPosition)
+            {
+                lastPointerPosition = pointerPosition;
+            }
+
             if (UiUtils.IsPointerOverUI())
             {
                 return Vector2.zero;
@@ -238,17 +270,16 @@ namespace _Project.Scripts.Controllers
             return edgeInput;
         }
 
-        private void InitializeInput()
+        private bool IsPointerOverGameView()
         {
-            if (controls != null)
-            {
-                return;
-            }
-
-            controls = new GameControls();
-
-            controls.CameraControl.Zoom.performed += OnZoomPerformed;
-            controls.CameraControl.RotateMouseDelta.performed += OnRotateMouseDeltaPerformed;
+#if UNITY_EDITOR
+            var focusedWindow = UnityEditor.EditorWindow.focusedWindow;
+            return focusedWindow != null &&
+                   focusedWindow.GetType().Name == "GameView" &&
+                   UnityEditor.EditorWindow.mouseOverWindow == focusedWindow;
+#else
+            return true;
+#endif
         }
 
         private void OnZoomPerformed(InputAction.CallbackContext context)

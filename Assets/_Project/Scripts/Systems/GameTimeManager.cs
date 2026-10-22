@@ -7,9 +7,8 @@ namespace _Project.Scripts.Systems
     {
         public static GameTimeManager Instance { get; private set; }
 
-        [Header("Pause")] 
-        private GameControls controls;
-        
+        private GameControls Controls => GameControlsProvider.Instance.Controls;
+
         [Header("Speed")]
 
         [SerializeField] private float[] timeScales = { 1f, 1.5f, 2f };
@@ -30,34 +29,21 @@ namespace _Project.Scripts.Systems
             Instance = this;
         }
 
-        private void OnEnable()
-        {
-            controls ??= new GameControls();
-            controls.Enable();
-        }
-
-        private void OnDisable()
-        {
-            controls?.Disable();
-        }
-
         private void Update()
         {
-            if (controls.GameControl.Pause.WasPressedThisFrame())
+            if (Controls.GameControl.Pause.WasPressedThisFrame())
             {
                 TogglePause();
             }
 
-            if (controls.GameControl.SpeedUp.WasPressedThisFrame())
+            if (Controls.GameControl.SpeedUp.WasPressedThisFrame())
             {
                 CycleSpeed();
             }
         }
 
-                private void OnDestroy()
+        private void OnDestroy()
         {
-            controls?.Dispose();
-
             if (Instance == this)
             {
                 Time.timeScale = 1f;

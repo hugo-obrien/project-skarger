@@ -1,4 +1,5 @@
 using _Project.Scripts.Controllers.ContextActions;
+using _Project.Scripts.Systems;
 using _Project.Scripts.UI;
 using _Project.Scripts.UI.Console;
 using _Project.Scripts.Units;
@@ -25,13 +26,14 @@ namespace _Project.Scripts.Controllers {
         [SerializeField] private ContextAction[] contextActions;
 
         private SelectionGroup _selectionGroup;
-        private GameControls _controls;
         private DebugConsole _console;
         private LayerMask _combinedClickedMask;
         private LayerMask _unitLayer;
         private MoveMarkerPresenter _moveMarkerPresenter;
         private RightClickContextBuilder _contextBuilder;
         private ContextActionResolver _actionResolver;
+
+        private GameControls Controls => GameControlsProvider.Instance.Controls;
 
         private void Awake() {
             if (!TryGetComponent(out _selectionGroup)) {
@@ -43,20 +45,11 @@ namespace _Project.Scripts.Controllers {
             _moveMarkerPresenter = new MoveMarkerPresenter(moveMarkerPrefab);
             _contextBuilder = new RightClickContextBuilder(interactiveLayers);
             _actionResolver = new ContextActionResolver(contextActions);
-        }
 
-        private void OnEnable() {
-            _controls ??= new GameControls();
-            _controls.Enable();
-            _console ??= FindAnyObjectByType<DebugConsole>();
-        }
-
-        private void OnDisable() {
-            _controls?.Disable();
+            _console = FindAnyObjectByType<DebugConsole>();
         }
 
         private void OnDestroy() {
-            _controls?.Dispose();
             _moveMarkerPresenter?.ClearAll();
         }
 
@@ -73,14 +66,14 @@ namespace _Project.Scripts.Controllers {
 
             if (_console != null && _console.IsOpen) return;
 
-            if (_controls.GameControl.Command.WasPressedThisFrame() && !UiUtils.IsPointerOverUI() &&
+            if (Controls.GameControl.Command.WasPressedThisFrame() && !UiUtils.IsPointerOverUI() &&
                 _selectionGroup.HasPlayerControlledUnits()) {
                 HandleRightClick();
             }
         }
 
         private void HandleRightClick() {
-            Ray ray = camera.ScreenPointToRay(_controls.GameControl.PointerPosition.ReadValue<Vector2>());
+            Ray ray = camera.ScreenPointToRay(Controls.GameControl.PointerPosition.ReadValue<Vector2>());
 
             RaycastHit[] hits = Physics.RaycastAll(ray, maxRaycastDistance, _combinedClickedMask,
                 QueryTriggerInteraction.Ignore);
@@ -93,7 +86,7 @@ namespace _Project.Scripts.Controllers {
             if (context == null) return;
 
             var services = new RightClickContextServices(_selectionGroup, _unitLayer, _moveMarkerPresenter,
-                _controls.GameControl.Modifier.IsPressed());
+                Controls.GameControl.Modifier.IsPressed());
 
             _actionResolver.ResolveAndExecute(context, services);
         }
